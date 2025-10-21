@@ -1,6 +1,6 @@
 # 🎅 Moonforged: Christmas Decorations
 
-![Preview Banner](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Christmas_Lights.png)
+![Preview Banner](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/sled.png)
 
 Bring the magic of Yule to Valheim!  
 
@@ -66,7 +66,7 @@ Pair it with banners, garlands, and the Christmas trees for a full Yule throne r
 <details>
 <summary>Click to view all prefabs</summary>
 
-*(Full list of prefabs from RelicRegistrar.cs, unchanged — see in-game Hammer menu.)*
+*(Full list of prefabs from RelicRegistrar.cs — see in-game Hammer menu for full crafting list.)*
 </details>
 
 ---
@@ -108,22 +108,24 @@ Keep an eye on future updates for more interactive holiday features!
 
 | | | |
 |:-:|:-:|:-:|
-| ![Banners](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/banners.png) | ![House Daytime](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/House_daytime.png) | ![House Nighttime](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/House_nighttime.png) |
+| ![Banners](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/banners.png) | ![House Daytime](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/House_daytime.png) | ![House Nighttime](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/House_nightime.png) |
 | ![Christmas Tree](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Christmas_tree.png) | ![Small Tree](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/small_christmas_tree.png) | ![Socks Fireplace](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/socks.png) |
-| ![Table Feast](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/table.png) | ![Sled](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/sled.png) | ![Sitting Middle](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Sitting_Middle.png) |
+| ![Table Feast](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/table.png) | ![Sled](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/sled.png) | ![Sitting Middle](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Sitting_Middle.jpg) |
 
 ### 🪑 Throne Sitting Showcase
 | | |
 |:-:|:-:|
-| ![Sitting Left](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Sitting_Left.png) | ![Sitting Right](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Sitting_Right.png) |
+| ![Sitting Left](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Sitting_Left.jpg) | ![Sitting Right](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Sitting_Right.jpg) |
+
+---
 
 ### 🎥 Videos
 
-#### Christmas Lights Demo  
-[![Christmas Lights](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Christmas_Lights.png)](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Christmas_Lights.mp4)
+#### 🎄 Christmas Lights Demo  
+![Christmas Lights](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Christmas_Light.gif)
 
-#### Train Joyride  
-[![Train Joyride](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Train_Joyride.png)](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Train_Joyride.mp4)
+#### 🚂 Train Joyride  
+![Train Joyride](https://raw.githubusercontent.com/Caen007/MoonforgedChristmasDecorations/main/img/Train_Joyride.gif)
 
 ---
 
