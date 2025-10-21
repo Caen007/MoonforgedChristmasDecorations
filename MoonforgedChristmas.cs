@@ -17,7 +17,7 @@ namespace Moonforged.ChristmasDecorations
     {
         public const string PluginGUID = "Moonforged.ChristmasDecorations";
         public const string PluginName = "Moonforged Christmas Decorations";
-        public const string PluginVersion = "1.0.3";
+        public const string PluginVersion = "1.0.0";
 
         private AssetBundle christmasBundle;
         private static readonly List<GameObject> placedObjects = new List<GameObject>();
@@ -28,8 +28,9 @@ namespace Moonforged.ChristmasDecorations
         {
             new Harmony("moonforged.christmas.scalingdebug").PatchAll();
 
-            // Embedded resource path (must match .csproj LogicalName)
-            string resourcePath = "Moonforged.ChristmasDecorations.christmas";
+            // was: "Moonforged.ChristmasDecorations.christmas"
+            string resourcePath = "MoonforgedChristmasDecorations.christmas";
+
 
             christmasBundle = EmbeddedAssetBundleLoader.LoadBundle(resourcePath);
 
