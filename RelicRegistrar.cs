@@ -64,38 +64,38 @@ namespace Moonforged.ChristmasDecorations
     new RelicRegistration("M_Garland", "Green Christmas Garland", new[] {
         new RequirementConfig("FineWood", 2),
         new RequirementConfig("Raspberry", 2)
-    }, "", "building", 0, "Workbench"),
+    }, "A traditional Holiday decoration, you can link them with bows.", "building", 0, "Workbench"),
 
     // #4
     new RelicRegistration("M_Garland_White", "White Christmas Garland", new[] {
         new RequirementConfig("FineWood", 2),
         new RequirementConfig("Blueberries", 2)
-    }, "", "building", 0, "Workbench"),
+    }, "A traditional Holiday decoration, you can link them with bows.", "building", 0, "Workbench"),
 
     // #5
     new RelicRegistration("M_Garland_Spiral_Green", "Christmas Spiral Garland (Green)", new[] {
         new RequirementConfig("FineWood", 5),
         new RequirementConfig("PineCone", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "They can be used arround pillars and poles.", "building", 0, "Workbench"),
 
     // #6
     new RelicRegistration("M_Garland_Spiral_White", "Christmas Spiral Garland (White)", new[] {
         new RequirementConfig("FineWood", 5),
         new RequirementConfig("PineCone", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "They can be used arround pillars and poles.", "building", 0, "Workbench"),
 
     // #7
     new RelicRegistration("M_Christmas_Wreath", "Christmas Wreath", new[] {
         new RequirementConfig("FineWood", 1),
         new RequirementConfig("FirCone", 4),
         new RequirementConfig("Raspberry", 10)
-    }, "", "building", 0, "Workbench"),
+    }, "Brings a traditional feeling in your homes.", "building", 0, "Workbench"),
 
     // #8
     new RelicRegistration("M_mistletoe", "Christmas Mistletoe", new[] {
         new RequirementConfig("FineWood", 1),
         new RequirementConfig("JuteRed", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "Kiss your partner or the troll under it.", "building", 0, "Workbench"),
 
 
     // ===================== LIGHTS & CHASERS =====================
@@ -103,26 +103,26 @@ namespace Moonforged.ChristmasDecorations
     // #9
     new RelicRegistration("Christmas_Lights1", "Christmas Star Lights", new[] {
         new RequirementConfig("Crystal", 5)
-    }, "", "building", 0, "Workbench"),
+    }, "Nice Twinkly Star shaped Lights.", "building", 0, "Workbench"),
 
     // #10
     new RelicRegistration("Christmas_Lights2", "Christmas Snowflake Lights", new[] {
         new RequirementConfig("Crystal", 5)
-    }, "", "building", 0, "Workbench"),
+    }, "Nice Twinkly Snowflake shaped Lights", "building", 0, "Workbench"),
 
     // #11
     new RelicRegistration("MChristmas_Lights1", "Christmas Lights", new[] {
         new RequirementConfig("Raspberry", 5),
         new RequirementConfig("Blueberries", 5),
         new RequirementConfig("Cloudberry", 5)
-    }, "", "building", 0, "Workbench"),
+    }, "Nice Twinkly Lights", "building", 0, "Workbench"),
 
     // #12
     new RelicRegistration("MChristmas_LongLights1", "Christmas Long Lights", new[] {
         new RequirementConfig("Raspberry", 5),
         new RequirementConfig("Blueberries", 5),
         new RequirementConfig("Cloudberry", 5)
-    }, "", "building", 0, "Workbench"),
+    }, "Nice Twinkly Lights", "building", 0, "Workbench"),
 
     // #13
     new RelicRegistration("M_Icicle_Lamp", "Icicle Christmas Lights", new[] {
@@ -135,22 +135,22 @@ namespace Moonforged.ChristmasDecorations
     // #14
     new RelicRegistration("M_Snowflake", "Christmas Hanging Snowflake Model I", new[] {
         new RequirementConfig("Crystal", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
 
     // #15
     new RelicRegistration("M_Snowflake2", "Christmas Hanging Snowflake Model II", new[] {
         new RequirementConfig("Crystal", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
 
     // #16
     new RelicRegistration("M_Snowflake3", "Christmas Hanging Snowflake Model III", new[] {
         new RequirementConfig("Crystal", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
 
     // #17
     new RelicRegistration("M_Snowflake4", "Christmas Hanging Snowflake Model IV", new[] {
         new RequirementConfig("Crystal", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
 
 
     // ===================== GIFTS & BOWS =====================
@@ -161,7 +161,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Carrot", 1),
         new RequirementConfig("Coal", 2)
-    }, "", "building", 0, "Workbench"),
+    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #19
     new RelicRegistration("M_Gift_Yellow_Deco", "Yellow Christmas Gift", new[] {
