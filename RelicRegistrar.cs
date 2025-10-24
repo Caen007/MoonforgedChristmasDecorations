@@ -129,6 +129,16 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("Crystal", 5)
     }, "Glowing icicle light string that drips with blue light.", "building", 0, "Workbench"),
 
+        // #13.1
+    new RelicRegistration("MultiStar_Light", "Star Lights", new[] {
+        new RequirementConfig("Crystal", 5)
+    }, "Glowing Multi Star lights.", "building", 0, "Workbench"),
+
+            // #13.2
+    new RelicRegistration("8Meter_Town_Light", "8 Meter Town Square Light", new[] {
+        new RequirementConfig("Crystal", 5)
+    }, "Town Square Star Light Decoration.", "building", 0, "Workbench"),
+
 
     // ===================== SNOWFLAKES (HANGING / CRYSTAL) =====================
 
@@ -153,7 +163,7 @@ namespace Moonforged.ChristmasDecorations
     }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
 
 
-    // ===================== GIFTS & BOWS =====================
+    // ===================== GIFTS =====================
 
     // #18
     new RelicRegistration("M_Gift_BlackOrange_Valheim", "Black & Orange Gift", new[] {
@@ -169,7 +179,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Coal", 1),
         new RequirementConfig("Dandelion", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #20
     new RelicRegistration("M_Gift_Red_Blue", "Red & Blue Christmas Gift", new[] {
@@ -177,14 +187,14 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Blueberries", 1),
         new RequirementConfig("Raspberry", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #21
     new RelicRegistration("M_Gree_Gold_Gift", "Green & Gold Christmas Gift", new[] {
         new RequirementConfig("FineWood", 1),
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Dandelion", 2)
-    }, "", "building", 0, "Workbench"),
+    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #22
     new RelicRegistration("M_SnowFlake_Blue", "Blue Snowflake Gift", new[] {
@@ -192,7 +202,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Blueberries", 2),
         new RequirementConfig("Cloudberry", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #23
     new RelicRegistration("M_SnowFlake_Red", "Red Snowflake Gift", new[] {
@@ -200,7 +210,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Raspberry", 1),
         new RequirementConfig("Cloudberry", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #24
     new RelicRegistration("M_Gift_Silver_Black", "Silver & Black Gift", new[] {
@@ -208,19 +218,21 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Coal", 1),
         new RequirementConfig("Cloudberry", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
+
+    // ===================== BOWS =====================
 
     // #25
     new RelicRegistration("M_BigblueChristmasbow", "Big Blue Christmas Bow", new[] {
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Blueberries", 2)
-    }, "You can use it to hide the garland edges.", "building", 0, "Workbench"),
+    }, "A nice Bow to connect your garlands.", "building", 0, "Workbench"),
 
     // #26
     new RelicRegistration("M_BigredChristmasbow", "Big Red Christmas Bow", new[] {
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Bloodbag", 1)
-    }, "You can use it to hide the garland edges.", "building", 0, "Workbench"),
+    }, "A nice Bow to connect your garlands.", "building", 0, "Workbench"),
 
 
     // ===================== SWEETS & DRINKS (CUPS, COOKIES, CAKES, WINE) =====================
@@ -255,65 +267,65 @@ namespace Moonforged.ChristmasDecorations
     // #31
     new RelicRegistration("M_Gingerbread_Man", "Gingerbread Man", new[] {
         new RequirementConfig("Wood", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "We finaly caught him!", "building", 0, "Workbench"),
 
     // #32
     new RelicRegistration("M_Christmas_Cake", "Christmas Cake on a Plate", new[] {
         new RequirementConfig("Stone", 1),
         new RequirementConfig("Blueberries", 5),
         new RequirementConfig("BarleyFlour", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "Don`t eat it all, leave some for Santa.", "building", 0, "Workbench"),
 
     // #33
     new RelicRegistration("M_Christmas_Cake2", "Christmas Strawberry Cake on a Plate", new[] {
         new RequirementConfig("Stone", 1),
         new RequirementConfig("Raspberry", 5),
         new RequirementConfig("BarleyFlour", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "Don`t eat it all, leave some for Santa.", "building", 0, "Workbench"),
 
     // #34
     new RelicRegistration("M_YuleLogCake", "Yule Log Cake", new[] {
         new RequirementConfig("Wood", 1),
         new RequirementConfig("Raspberry", 5),
         new RequirementConfig("BarleyFlour", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "Is not a poop is a cake.", "building", 0, "Workbench"),
 
     // #35
     new RelicRegistration("M_Christmas_Wine", "Bottle of Wine", new[] {
         new RequirementConfig("Wood", 1),
         new RequirementConfig("Stone", 1),
         new RequirementConfig("Raspberry", 5)
-    }, "", "building", 0, "Workbench"),
+    }, "Moonforged Christmas Home made Wine for you all.", "building", 0, "Workbench"),
 
 
     // ===================== CANDY CANES (1 m) =====================
 
     // #36
-    new RelicRegistration("M_Red_Candy_Cane_1m", "Red Candy Cane 1 m", new[] {
+    new RelicRegistration("M_Red_Candy_Cane_1m", "Red Candy Cane", new[] {
         new RequirementConfig("Wood", 1),
         new RequirementConfig("Raspberry", 1),
         new RequirementConfig("Cloudberry", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "Candy Cane decorations.", "building", 0, "Workbench"),
 
     // #37
-    new RelicRegistration("M_Green_Candy_Cane_1m", "Green Candy Cane 1 m", new[] {
+    new RelicRegistration("M_Green_Candy_Cane_1m", "Green Candy Cane", new[] {
         new RequirementConfig("Wood", 1),
         new RequirementConfig("Dandelion", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "Candy Cane decorations.", "building", 0, "Workbench"),
 
     // #38
-    new RelicRegistration("M_RedGreen_Candy_Cane_1m", "Red & Green Candy Cane 1 m", new[] {
+    new RelicRegistration("M_RedGreen_Candy_Cane_1m", "Red & Green Candy Cane", new[] {
         new RequirementConfig("Wood", 1),
         new RequirementConfig("Raspberry", 1),
         new RequirementConfig("Dandelion", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "Candy Cane decorations.", "building", 0, "Workbench"),
 
     // #39
-    new RelicRegistration("M_Green_Red_Candy_Cane_1m", "Green & Red Candy Cane 1 m", new[] {
+    new RelicRegistration("M_Green_Red_Candy_Cane_1m", "Green & Red Candy Cane", new[] {
         new RequirementConfig("Wood", 1),
         new RequirementConfig("Raspberry", 1),
         new RequirementConfig("Dandelion", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "Candy Cane decorations.", "building", 0, "Workbench"),
 
 
     // ===================== STOCKINGS & SNOWMAN =====================
@@ -354,7 +366,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("LeatherScraps", 3),
         new RequirementConfig("Raspberry", 3),
         new RequirementConfig("Cloudberry", 1)
-    }, "", "building", 0, "Workbench"),
+    }, "He`s always watching, what a creep.", "building", 0, "Workbench"),
 
     // #45
     new RelicRegistration("M_SantaBag", "Santa’s Bag of Gifts", new[] {
@@ -366,12 +378,12 @@ namespace Moonforged.ChristmasDecorations
     new RelicRegistration("M_boot", "Santa’s Boot of Gifts and Flowers", new[] {
         new RequirementConfig("Wood", 2),
         new RequirementConfig("Raspberry", 2)
-    }, "You can put gifts or flowers inside the boot", "building", 0, "Workbench"),
+    }, "You can put gifts or flowers inside the boot.", "building", 0, "Workbench"),
 
     // #47
     new RelicRegistration("M_Nutcracker", "Nutcracker Figurine", new[] {
         new RequirementConfig("FineWood", 1)
-    }, "German-style wooden figurine with a hinged mouth for cracking nuts.", "building", 0, "Workbench"),
+    }, "Wooden figurine with a hinged mouth for cracking nuts.", "building", 0, "Workbench"),
 
     // #48
     new RelicRegistration("M_Small_Santa_Wood_Carving", "Small Santa Wood Carving", new[] {
@@ -387,7 +399,7 @@ namespace Moonforged.ChristmasDecorations
     // ===================== DEER, SLED & TRAIN =====================
 
     // #50
-    new RelicRegistration("M_Deer", "Santa’s Reindeer", new[] {
+    new RelicRegistration("M_Deer", "Santa’s Reindeers", new[] {
         new RequirementConfig("DeerMeat", 4),
         new RequirementConfig("DeerHide", 4)
     }, "Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Donner, Blitzen", "building", 0, "Workbench"),
@@ -410,7 +422,7 @@ namespace Moonforged.ChristmasDecorations
     new RelicRegistration("M_Christmas_Train", "Christmas Train", new[] {
         new RequirementConfig("FineWood", 5),
         new RequirementConfig("Iron", 1)
-    }, "A small train that runs around its track and you can sit on it.", "building", 0, "Forge"),
+    }, "A small train that runs around its track and you can ride it round and round.", "building", 0, "Forge"),
 
 
     // ===================== BANNERS & THRONE =====================
@@ -421,7 +433,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("FineWood", 2),
         new RequirementConfig("Raspberry", 2),
         new RequirementConfig("Guck", 1)
-    }, "Reindeer under the mistletoe", "building", 0, "Workbench"),
+    }, "Reindeers under the mistletoe", "building", 0, "Workbench"),
 
     // #55 (removed 5th: Cloudberry)
     new RelicRegistration("M_Christmas_Banner_2", "Santa`s Christmas Banner II", new[] {
@@ -437,7 +449,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("FineWood", 2),
         new RequirementConfig("Raspberry", 2),
         new RequirementConfig("Cloudberry", 1)
-    }, "Candy Cane banner", "building", 0, "Workbench"),
+    }, "Reindeers under the evening star.", "building", 0, "Workbench"),
 
     // #57
     new RelicRegistration("M_Bench", "Santa`s Christmas Bench", new[] {
@@ -450,7 +462,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("FineWood", 20),
         new RequirementConfig("BronzeNails", 10),
         new RequirementConfig("JuteRed", 2)
-    }, "Sit on his lap and tell him what you want", "building", 0, "Forge"),
+    }, "Sit on Santa`s lap and tell him what you want for christmas.", "building", 0, "Forge"),
 
 
 
@@ -475,7 +487,7 @@ namespace Moonforged.ChristmasDecorations
     // #61
     new RelicRegistration("M_icicles", "An Icicle.", new[] {
         new RequirementConfig("Crystal", 1)
-    }, "", "building", 0, "Workbench")
+    }, "Dripping ice decoration.", "building", 0, "Workbench")
 };
 
 
@@ -541,7 +553,14 @@ namespace Moonforged.ChristmasDecorations
                 ChristmasLightChaserInstaller.InstallOn(prefab, 1f, 4.4f);
             if (reg.PrefabName == "Christmas_Lights2")
                 ChristmasLightChaserInstaller.InstallOn(prefab, 0.8f, 4.4f,
+                    new Color[] { Color.white, Color.yellow }, ChristmasLightChaser.AnimationMode.BlinkAll); 
+
+            //experimental
+            if (reg.PrefabName == "8Meter_Town_Light")
+                ChristmasLightChaserInstaller.InstallOn(prefab, 0.8f, 4.4f,
                     new Color[] { Color.white, Color.yellow }, ChristmasLightChaser.AnimationMode.BlinkAll);
+
+
             if (reg.PrefabName == "MChristmas_Lights1" || reg.PrefabName == "MChristmas_LongLights1")
                 ChristmasLightChaserInstaller.InstallOn(prefab, 1f, 4.4f,
                     new Color[] { Color.red, Color.yellow, Color.blue }, ChristmasLightChaser.AnimationMode.Chase);
@@ -556,6 +575,21 @@ namespace Moonforged.ChristmasDecorations
             {
                 var flow = prefab.GetComponent<IcicleFlow>() ?? prefab.AddComponent<IcicleFlow>();
                 flow.columnNamePrefix = "Icicle_Lamp_";
+                flow.bulbNamePrefix = "Light";
+                flow.dripStepSeconds = 0.35f;
+                flow.pauseAfterColumn = 0.60f;
+                flow.emissionIntensity = 4.5f;
+                flow.dripColor = new Color(0.60f, 0.85f, 1.00f);
+                flow.batchCount = 4;
+                flow.batchSpacingSeconds = 4.0f;
+                flow.autoDetectVerticalAxis = true;
+            }
+
+
+            if (reg.PrefabName == "MultiStar_Light")
+            {
+                var flow = prefab.GetComponent<IcicleFlow>() ?? prefab.AddComponent<IcicleFlow>();
+                flow.columnNamePrefix = "MultiStar_Light";
                 flow.bulbNamePrefix = "Light";
                 flow.dripStepSeconds = 0.35f;
                 flow.pauseAfterColumn = 0.60f;
@@ -642,6 +676,8 @@ namespace Moonforged.ChristmasDecorations
                 "M_Christmas_Wine",
                 "M_MilkandCookiesforSanta",
                 "M_boot",
+                "8Meter_Town_Light",
+                "MultiStar_Light",
                 "Christmas_Lights1",
                 "Christmas_Lights2",
                 "MChristmas_Lights1",
