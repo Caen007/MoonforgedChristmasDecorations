@@ -385,15 +385,15 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("FineWood", 1)
     }, "Wooden figurine with a hinged mouth for cracking nuts.", "building", 0, "Workbench"),
 
-    // #48
-    new RelicRegistration("M_Small_Santa_Wood_Carving", "Small Santa Wood Carving", new[] {
-        new RequirementConfig("FineWood", 1)
-    }, "", "building", 0, "Workbench"),
+  //  // #48
+  //  new RelicRegistration("M_Small_Santa_Wood_Carving", "Small Santa Wood Carving", new[] {
+  //      new RequirementConfig("FineWood", 1)
+  //  }, "", "building", 0, "Workbench"),
 
     // #49
-    new RelicRegistration("M_Fairy_House_Christmas", "Christmas Fairy House Wood Carving", new[] {
-        new RequirementConfig("FineWood", 2)
-    }, "", "building", 0, "Workbench"),
+   // new RelicRegistration("M_Fairy_House_Christmas", "Christmas Fairy House Wood Carving", new[] {
+     //   new RequirementConfig("FineWood", 2)
+   // }, "", "building", 0, "Workbench"),
 
 
     // ===================== DEER, SLED & TRAIN =====================
