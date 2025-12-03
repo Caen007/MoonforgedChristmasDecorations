@@ -171,33 +171,15 @@ namespace Moonforged.ChristmasDecorations
         private List<Transform> FindDeerRoots()
         {
             var list = new List<Transform>();
-
-            // NEW API (no CS0618 warnings):
-            DeerMarker[] markers = Object.FindObjectsByType<DeerMarker>(
-                FindObjectsInactive.Include, FindObjectsSortMode.None);
-
             Vector3 myPos = transform.position;
 
-            for (int i = 0; i < markers.Length; i++)
+            // ✅ Use the DeerMarker registry instead of scanning the entire scene
+            foreach (var marker in DeerMarker.All)
             {
-                Transform t = markers[i].transform;
-                if (Vector3.Distance(t.position, myPos) <= searchRadius) list.Add(t);
-            }
-
-            // Fallback: names containing "deer"
-            if (list.Count == 0)
-            {
-                GameObject[] all = Object.FindObjectsByType<GameObject>(
-                    FindObjectsInactive.Include, FindObjectsSortMode.None);
-
-                for (int i = 0; i < all.Length; i++)
-                {
-                    GameObject go = all[i];
-                    if (!go) continue;
-                    string n = go.name.ToLowerInvariant();
-                    if (n.Contains("deer") && Vector3.Distance(go.transform.position, myPos) <= searchRadius)
-                        list.Add(go.transform);
-                }
+                if (!marker) continue;
+                Transform t = marker.transform;
+                if (Vector3.Distance(t.position, myPos) <= searchRadius)
+                    list.Add(t);
             }
 
             return list;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// Assets/Moonforged Christmas Decorations/Scripts/IcicleFlow.cs
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Moonforged.ChristmasDecorations
@@ -17,18 +18,22 @@ namespace Moonforged.ChristmasDecorations
         [Header("Look")]
         public Color dripColor = new Color(0.60f, 0.85f, 1.00f); // icy blue
         [Min(0f)] public float emissionIntensity = 4.5f;         // HDR-ish
-        public bool affectBaseColor = false;                      // usually false (only emission)
+        public bool affectBaseColor = false;                     // usually false (only emission)
 
         [Header("Timing")]
-        [Min(0.01f)] public float dripStepSeconds = 0.15f;        // time between bulbs lighting in a column
-        [Min(0f)] public float pauseAfterColumn = 0.60f;      // pause before a column restarts
-        [Min(1)] public int batchCount = 3;                  // e.g. 3 => every 3rd column starts together
-        [Min(0f)] public float batchSpacingSeconds = 4f;      // delay between batches (your 4s)
+        [Min(0.01f)] public float dripStepSeconds = 0.15f;       // time between bulbs lighting in a column
+        [Min(0f)] public float pauseAfterColumn = 0.60f;         // pause before a column restarts
+        [Min(1)] public int batchCount = 3;                      // e.g. 3 => every 3rd column starts together
+        [Min(0f)] public float batchSpacingSeconds = 4f;         // delay between batches (your 4s)
 
         [Header("Advanced")]
-        public bool includeInactive = true;                       // include disabled children
-        public bool autoDetectVerticalAxis = true;                // pick Y vs Z per setup
-        public Axis verticalAxis = Axis.Auto;                     // fallback/override if needed
+        public bool includeInactive = true;                      // include disabled children
+        public bool autoDetectVerticalAxis = true;               // pick Y vs Z per setup
+        public Axis verticalAxis = Axis.Auto;                    // fallback/override if needed
+
+        [Header("Performance")]
+        [Min(0.01f)] public float minUpdateInterval = 0.05f;     // throttle heavy work
+        [Min(0f)] public float activeDistance = 60f;             // disable when no player near
 
         public enum Axis { Auto, Y, Z }
 
@@ -36,6 +41,9 @@ namespace Moonforged.ChristmasDecorations
         private readonly List<Column> _columns = new List<Column>();
         private float _gammaIntensity; // cached LinearToGammaSpace(emissionIntensity)
         private int _colorId, _emissId;
+
+        private float _accum;
+        private bool _isActive;
 
         private class Column
         {
@@ -63,6 +71,28 @@ namespace Moonforged.ChristmasDecorations
         void Update()
         {
             if (_columns.Count == 0) return;
+
+            // ✅ Skip completely if no player is nearby
+            if (activeDistance > 0f && !Player.IsPlayerInRange(transform.position, activeDistance))
+            {
+                if (_isActive)
+                {
+                    // turn off all bulbs once when deactivating
+                    for (int ci = 0; ci < _columns.Count; ci++)
+                    {
+                        SetColumnAll(_columns[ci], Color.black);
+                    }
+                    _isActive = false;
+                }
+                return;
+            }
+
+            _isActive = true;
+
+            // ✅ Throttle heavy work to a max frequency
+            _accum += Time.deltaTime;
+            if (_accum < minUpdateInterval) return;
+            _accum = 0f;
 
             float now = Time.time;
 
