@@ -28,9 +28,7 @@ namespace Moonforged.ChristmasDecorations
         {
             new Harmony("moonforged.christmas.scalingdebug").PatchAll();
 
-            // was: "Moonforged.ChristmasDecorations.christmas"
             string resourcePath = "MoonforgedChristmasDecorations.christmas";
-
 
             christmasBundle = EmbeddedAssetBundleLoader.LoadBundle(resourcePath);
 
@@ -98,6 +96,89 @@ namespace Moonforged.ChristmasDecorations
                 stream.Read(buffer, 0, buffer.Length);
                 return AssetBundle.LoadFromMemory(buffer);
             }
+        }
+    }
+
+    // ============================================================
+    // Gift opening patch
+    // ============================================================
+    [HarmonyPatch]
+    internal static class WrappedGiftConsumePatch
+    {
+        [HarmonyPatch(typeof(Player), nameof(Player.ConsumeItem))]
+        [HarmonyPrefix]
+        private static bool Player_ConsumeItem_Prefix(Player __instance, Inventory inventory, ItemDrop.ItemData item)
+        {
+            if (__instance == null || inventory == null || item == null)
+                return true;
+
+            if (!IsGift(item))
+                return true;
+
+            // ✅ FIX: pass real Player instance (restart-safe)
+            if (WrappedGiftUse.OnUse(item, __instance))
+                return false;
+
+            return true;
+        }
+
+        private static bool IsGift(ItemDrop.ItemData item)
+        {
+            if (item == null || item.m_dropPrefab == null)
+                return false;
+
+            string n = item.m_dropPrefab.name;
+            if (string.IsNullOrEmpty(n))
+                return false;
+
+            if (n.StartsWith("M_Gift_")) return true;
+            if (n.StartsWith("M_SnowFlake_")) return true;
+            if (n == "M_Gree_Gold_Gift") return true;
+
+            return false;
+        }
+    }
+
+    // ============================================================
+    // Wrapper hover patches
+    // ============================================================
+    [HarmonyPatch(typeof(Container), nameof(Container.GetHoverName))]
+    internal static class WrappingBoxHoverNamePatch
+    {
+        private static void Postfix(Container __instance, ref string __result)
+        {
+            if (__instance == null) return;
+
+            var proc = __instance.GetComponentInParent<WrappingBoxProcessor>();
+            if (proc == null) return;
+
+            __result = "Wrapper";
+        }
+    }
+
+    [HarmonyPatch(typeof(Container), nameof(Container.GetHoverText))]
+    internal static class WrappingBoxHoverTextPatch
+    {
+        private static void Postfix(Container __instance, ref string __result)
+        {
+            if (__instance == null) return;
+
+            var proc = __instance.GetComponentInParent<WrappingBoxProcessor>();
+            if (proc == null) return;
+
+            if (proc.CanWrap())
+            {
+                __result =
+                    "Wrapper\n" +
+                    "[<color=yellow><b>E</b></color>] Open\n" +
+                    "<color=orange>Close box to wrap gift</color>";
+                return;
+            }
+
+            __result =
+                "Wrapper\n" +
+                "[<color=yellow><b>E</b></color>] Open\n" +
+                "(Add 1 gift + 1 item)";
         }
     }
 }

@@ -4,7 +4,9 @@ using Jotunn.Entities;
 using Jotunn.Managers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Moonforged.ChristmasDecorations
 {
@@ -46,7 +48,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("Wood", 30),
         new RequirementConfig("Raspberry", 20),
         new RequirementConfig("Blueberries", 20),
-        new RequirementConfig("Cloudberry", 20)
+        new RequirementConfig("Coal", 20)
     }, "Large town square Christmas Tree, craft a Star in the workbench and place it on the top.", "building", 0, "Workbench"),
 
     // #2 (removed 5th: PineCone)
@@ -54,7 +56,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("Wood", 10),
         new RequirementConfig("Raspberry", 5),
         new RequirementConfig("Blueberries", 5),
-        new RequirementConfig("Cloudberry", 5)
+        new RequirementConfig("Coal", 5)
     }, "A small Christmas Tree, craft a Star in the workbench and place it on the top.", "building", 0, "Workbench"),
 
 
@@ -114,14 +116,14 @@ namespace Moonforged.ChristmasDecorations
     new RelicRegistration("MChristmas_Lights1", "Christmas Lights", new[] {
         new RequirementConfig("Raspberry", 5),
         new RequirementConfig("Blueberries", 5),
-        new RequirementConfig("Cloudberry", 5)
+        new RequirementConfig("Coal", 5)
     }, "Nice Twinkly Lights", "building", 0, "Workbench"),
 
     // #12
     new RelicRegistration("MChristmas_LongLights1", "Christmas Long Lights", new[] {
         new RequirementConfig("Raspberry", 5),
         new RequirementConfig("Blueberries", 5),
-        new RequirementConfig("Cloudberry", 5)
+        new RequirementConfig("Coal", 5)
     }, "Nice Twinkly Lights", "building", 0, "Workbench"),
 
     // #13
@@ -163,62 +165,21 @@ namespace Moonforged.ChristmasDecorations
     }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
 
 
-    // ===================== GIFTS =====================
+    // ===================== New addons =====================
 
     // #18
-    new RelicRegistration("M_Gift_BlackOrange_Valheim", "Black & Orange Gift", new[] {
-        new RequirementConfig("FineWood", 1),
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Carrot", 1),
-        new RequirementConfig("Coal", 2)
-    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #19
-    new RelicRegistration("M_Gift_Yellow_Deco", "Yellow Christmas Gift", new[] {
-        new RequirementConfig("FineWood", 1),
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Coal", 1),
-        new RequirementConfig("Dandelion", 1)
-    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #20
-    new RelicRegistration("M_Gift_Red_Blue", "Red & Blue Christmas Gift", new[] {
-        new RequirementConfig("FineWood", 1),
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Blueberries", 1),
-        new RequirementConfig("Raspberry", 1)
-    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #21
-    new RelicRegistration("M_Gree_Gold_Gift", "Green & Gold Christmas Gift", new[] {
-        new RequirementConfig("FineWood", 1),
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Dandelion", 2)
-    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #22
-    new RelicRegistration("M_SnowFlake_Blue", "Blue Snowflake Gift", new[] {
-        new RequirementConfig("FineWood", 1),
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Blueberries", 2),
-        new RequirementConfig("Cloudberry", 1)
-    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #23
-    new RelicRegistration("M_SnowFlake_Red", "Red Snowflake Gift", new[] {
-        new RequirementConfig("FineWood", 1),
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Raspberry", 1),
-        new RequirementConfig("Cloudberry", 1)
-    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // #24
-    new RelicRegistration("M_Gift_Silver_Black", "Silver & Black Gift", new[] {
-        new RequirementConfig("FineWood", 1),
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Coal", 1),
-        new RequirementConfig("Cloudberry", 1)
-    }, "A Gift to place under the tree.", "building", 0, "Workbench"),
 
     // ===================== BOWS =====================
 
@@ -240,23 +201,20 @@ namespace Moonforged.ChristmasDecorations
     // #27
     new RelicRegistration("M_Cozy_Yule_Cup", "Cozy Yule Hot Cocoa Cup", new[] {
         new RequirementConfig("Wood", 1),
-        new RequirementConfig("Coal", 1),
-        new RequirementConfig("Cloudberry", 1)
+        new RequirementConfig("Coal", 1)
     }, "", "building", 0, "Workbench"),
 
     // #28
     new RelicRegistration("M_Cozy_Candy_Cane_Cup", "Hot Cocoa Cup with a Candy Cane", new[] {
         new RequirementConfig("Wood", 1),
-        new RequirementConfig("Coal", 1),
-        new RequirementConfig("Cloudberry", 1)
+        new RequirementConfig("Coal", 1)
     }, "", "building", 0, "Workbench"),
 
     // #29
     new RelicRegistration("Christmas_Cups3", "Hot Cocoa Cup with a Chocolate Tree", new[] {
         new RequirementConfig("Wood", 1),
-        new RequirementConfig("Coal", 1),
-        new RequirementConfig("Cloudberry", 1)
-    }, "", "building", 0, "Workbench"),
+        new RequirementConfig("Coal", 1)
+        }, "", "building", 0, "Workbench"),
 
     // #30
     new RelicRegistration("M_MilkandCookiesforSanta", "Milk and Cookies for Santa", new[] {
@@ -304,7 +262,7 @@ namespace Moonforged.ChristmasDecorations
     new RelicRegistration("M_Red_Candy_Cane_1m", "Red Candy Cane", new[] {
         new RequirementConfig("Wood", 1),
         new RequirementConfig("Raspberry", 1),
-        new RequirementConfig("Cloudberry", 1)
+        new RequirementConfig("Coal", 1)
     }, "Candy Cane decorations.", "building", 0, "Workbench"),
 
     // #37
@@ -327,8 +285,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("Dandelion", 1)
     }, "Candy Cane decorations.", "building", 0, "Workbench"),
 
-
-    // ===================== STOCKINGS & SNOWMAN =====================
+        // ===================== STOCKINGS & SNOWMAN =====================
 
     // #40
     new RelicRegistration("M_Christmas_Stocking", "Christmas Stocking", new[] {
@@ -357,7 +314,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("FineWood", 10),
         new RequirementConfig("LeatherScraps", 10),
         new RequirementConfig("Raspberry", 10),
-        new RequirementConfig("Cloudberry", 5)
+        new RequirementConfig("Coal", 5)
     }, "Saint Nicholas", "building", 0, "Workbench"),
 
     // #44
@@ -365,7 +322,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("FineWood", 2),
         new RequirementConfig("LeatherScraps", 3),
         new RequirementConfig("Raspberry", 3),
-        new RequirementConfig("Cloudberry", 1)
+        new RequirementConfig("Coal", 1)
     }, "He`s always watching, what a creep.", "building", 0, "Workbench"),
 
     // #45
@@ -385,15 +342,9 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("FineWood", 1)
     }, "Wooden figurine with a hinged mouth for cracking nuts.", "building", 0, "Workbench"),
 
-  //  // #48
-  //  new RelicRegistration("M_Small_Santa_Wood_Carving", "Small Santa Wood Carving", new[] {
-  //      new RequirementConfig("FineWood", 1)
-  //  }, "", "building", 0, "Workbench"),
+    // #48
 
     // #49
-   // new RelicRegistration("M_Fairy_House_Christmas", "Christmas Fairy House Wood Carving", new[] {
-     //   new RequirementConfig("FineWood", 2)
-   // }, "", "building", 0, "Workbench"),
 
 
     // ===================== DEER, SLED & TRAIN =====================
@@ -427,7 +378,7 @@ namespace Moonforged.ChristmasDecorations
 
     // ===================== BANNERS & THRONE =====================
 
-    // #54 (removed 5th: Cloudberry)
+    // #54 (removed 5th: Coal)
     new RelicRegistration("M_Christmas_Banner_1", "Santa`s Christmas Banner I", new[] {
         new RequirementConfig("LeatherScraps", 6),
         new RequirementConfig("FineWood", 2),
@@ -435,7 +386,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("Guck", 1)
     }, "Reindeers under the mistletoe", "building", 0, "Workbench"),
 
-    // #55 (removed 5th: Cloudberry)
+    // #55 (removed 5th: Coal)
     new RelicRegistration("M_Christmas_Banner_2", "Santa`s Christmas Banner II", new[] {
         new RequirementConfig("LeatherScraps", 6),
         new RequirementConfig("FineWood", 2),
@@ -448,7 +399,7 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("LeatherScraps", 6),
         new RequirementConfig("FineWood", 2),
         new RequirementConfig("Raspberry", 2),
-        new RequirementConfig("Cloudberry", 1)
+        new RequirementConfig("Coal", 1)
     }, "Reindeers under the evening star.", "building", 0, "Workbench"),
 
     // #57
@@ -505,10 +456,17 @@ namespace Moonforged.ChristmasDecorations
     new RelicRegistration("ChristmasHouseMozaic", "Christmas Home Stained-Glass Window.", new[] {
         new RequirementConfig("Crystal", 1),
         new RequirementConfig("FineWood", 4)
-    }, "", "building", 0, "Workbench")
+    }, "", "building", 0, "Workbench"),
+
+    // #65
+
+                new RelicRegistration("M_Wrapping_Table", "Christmas Wrapping Table.", new[] {
+                new RequirementConfig("Wood", 5),
+                new RequirementConfig("FineWood", 5)
+
+    }, "From this table you can create christmas gifts and decorations.", "building", 0, "")
 
 };
-
 
         public static IEnumerable<string> GetAllCategories() =>
             AllRegistrations.Select(r => CategoryToTab(r.Category)).Distinct();
@@ -529,6 +487,11 @@ namespace Moonforged.ChristmasDecorations
         {
             if (wasAlreadyRegistered) return;
             foreach (var reg in AllRegistrations) RegisterRelic(bundle, reg);
+
+            // Wrapped gifts + wrapping paper are ITEMS (not pieces) and are registered separately
+            WrappedGiftItemRegistrar.Register(bundle);
+            WrappingPaperRegistrar.Register(bundle);
+
             wasAlreadyRegistered = true;
         }
 
@@ -545,6 +508,10 @@ namespace Moonforged.ChristmasDecorations
             GameObject prefab = bundle.LoadAsset<GameObject>(reg.PrefabName);
             if (prefab == null) return;
             prefab.name = reg.PrefabName;
+
+            if (reg.PrefabName == "M_Wrapping_Table")
+                prefab.AddComponent<WrappingBoxProxy>();
+
 
             // Deer scaling & marker
             if (reg.PrefabName == "M_Deer" || reg.PrefabName == "M_Deer_Rudy")
@@ -572,7 +539,7 @@ namespace Moonforged.ChristmasDecorations
                 ChristmasLightChaserInstaller.InstallOn(prefab, 1f, 4.4f);
             if (reg.PrefabName == "Christmas_Lights2")
                 ChristmasLightChaserInstaller.InstallOn(prefab, 0.8f, 4.4f,
-                    new Color[] { Color.white, Color.yellow }, ChristmasLightChaser.AnimationMode.BlinkAll); 
+                    new Color[] { Color.white, Color.yellow }, ChristmasLightChaser.AnimationMode.BlinkAll);
 
             //experimental
             if (reg.PrefabName == "8Meter_Town_Light")
@@ -642,6 +609,26 @@ namespace Moonforged.ChristmasDecorations
             // Train orbit
             if (reg.PrefabName == "M_Christmas_Train")
                 InstallTrainOrbit(prefab, degreesPerSecond: 18f, clockwise: false);
+
+            // ===================== WRAPPING BOX AUTO-ATTACH (ONLY NEW CODE) =====================
+            if (reg.PrefabName == "M_Wrapping_Table")
+            {
+                Transform box = prefab.transform.Find("Wrapping_Box");
+                if (box != null)
+                {
+                    GameObject boxGO = box.gameObject;
+
+                    // Do not create/modify other components here.
+                    // Assumes Wrapping_Box already has ZNetView + Container from the prefab.
+                    if (boxGO.GetComponent<WrappingBoxProcessor>() == null)
+                    {
+                        boxGO.AddComponent<WrappingBoxProcessor>();
+                    }
+                }
+
+                EnsureWrappingTableCraftEffects(prefab);
+            }
+            // =================== END WRAPPING BOX AUTO-ATTACH (ONLY NEW CODE) ===================
 
             // Network & piece setup
             var znv = prefab.GetComponent<ZNetView>() ?? prefab.AddComponent<ZNetView>();
@@ -777,6 +764,63 @@ namespace Moonforged.ChristmasDecorations
             };
 
             PieceManager.Instance.AddPiece(new CustomPiece(prefab, true, config));
+        }
+
+        private static void EnsureWrappingTableCraftEffects(GameObject wrappingTablePrefab)
+        {
+            if (wrappingTablePrefab == null) return;
+
+            var station = wrappingTablePrefab.GetComponent<CraftingStation>() ?? wrappingTablePrefab.AddComponent<CraftingStation>();
+            station.m_name = "Wrapping Table";
+
+
+            GameObject sfxCraft =
+                ZNetScene.instance?.GetPrefab("sfx_gui_craftitem_workbench");
+
+            GameObject sfxDone =
+                ZNetScene.instance?.GetPrefab("sfx_gui_craftitem_workbench_end");
+
+
+            // 🚫 no smoke VFX at all
+            GameObject vfxCraft = null;
+            GameObject vfxDone = null;
+
+            EffectList craft = MakeEffectList(vfxCraft, sfxCraft);
+            EffectList done = MakeEffectList(vfxDone, sfxDone);
+
+            TrySetEffectListField(station, "m_craftItemEffects", craft);
+            TrySetEffectListField(station, "m_craftItemEffect", craft);
+
+            TrySetEffectListField(station, "m_craftDoneEffects", done);
+            TrySetEffectListField(station, "m_craftItemDoneEffects", done);
+            TrySetEffectListField(station, "m_craftItemDoneEffect", done);
+
+            TrySetEffectListField(station, "m_repairItemEffects", craft);
+            TrySetEffectListField(station, "m_repairItemEffect", craft);
+
+        }
+
+        private static void TrySetEffectListField(object target, string fieldName, EffectList value)
+        {
+            if (target == null || string.IsNullOrEmpty(fieldName) || value == null) return;
+
+            var f = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (f == null) return;
+            if (f.FieldType != typeof(EffectList)) return;
+
+            f.SetValue(target, value);
+        }
+
+        private static EffectList MakeEffectList(GameObject vfx, GameObject sfx)
+        {
+            var list = new EffectList();
+            var arr = new List<EffectList.EffectData>();
+
+            if (vfx != null) arr.Add(new EffectList.EffectData { m_prefab = vfx, m_enabled = true });
+            if (sfx != null) arr.Add(new EffectList.EffectData { m_prefab = sfx, m_enabled = true });
+
+            list.m_effectPrefabs = arr.ToArray();
+            return list;
         }
 
         private static void RegisterCraftedStar(AssetBundle bundle, RelicRegistration reg)

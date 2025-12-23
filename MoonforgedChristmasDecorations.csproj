@@ -34,6 +34,9 @@
     <Reference Include="0Harmony">
       <HintPath>..\..\U Projects\Moonforged Christmas Decorations\Moonforged Christmas Decorations\Libs\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="assembly_utils">
+      <HintPath>..\Caenos Relics\Libs\assembly_utils.dll</HintPath>
+    </Reference>
     <Reference Include="assembly_valheim">
       <HintPath>..\..\U Projects\Moonforged Christmas Decorations\Moonforged Christmas Decorations\Libs\assembly_valheim.dll</HintPath>
     </Reference>
@@ -80,6 +83,13 @@
     <Compile Include="ChristmasLightChaser.cs" />
     <Compile Include="ChristmasLightChaserInstaller.cs" />
     <Compile Include="ChristmasLightsGlow.cs" />
+    <Compile Include="WrappingPaperCraftFX.cs" />
+    <Compile Include="WrappingBoxProxy.cs" />
+    <Compile Include="WrappedGiftUse.cs" />
+    <Compile Include="WrappingBoxProcessor.cs" />
+    <Compile Include="WrappedGiftData.cs" />
+    <Compile Include="WrappingPaperRegistrar.cs" />
+    <Compile Include="WrappedGiftItemRegistrar.cs" />
     <Compile Include="DeerMarker.cs" />
     <Compile Include="IcicleFlow.cs" />
     <Compile Include="MoonforgedChristmas.cs" />
