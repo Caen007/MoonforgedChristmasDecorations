@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Moonforged.ChristmasDecorations
 {
     /// Cycles Red/Yellow/Blue on specific child renderers only (Light1/Light2/Light3).
-    /// Now uses sharedMaterial + timed coroutine instead of per-frame Update.
+    /// Uses sharedMaterial and a timed coroutine instead of per-frame Update.
     public class ChildLightsCycler : MonoBehaviour
     {
         public string[] lightRendererNames = new[] { "Light1", "Light2", "Light3" };

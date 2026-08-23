@@ -45,7 +45,7 @@ namespace Moonforged.ChristmasDecorations
                 float.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out durability);
 
             ItemDrop.ItemData restored = drop.m_itemData.Clone();
-            restored.m_dropPrefab = prefab; // 🔒 critical
+            restored.m_dropPrefab = prefab; // preserve the restored item identity
             restored.m_stack = Mathf.Max(1, stack);
             restored.m_quality = Mathf.Max(1, quality);
             restored.m_variant = variant;

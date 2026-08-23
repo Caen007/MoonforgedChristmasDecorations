@@ -9,13 +9,13 @@ namespace Moonforged.ChristmasDecorations
     public class ChristmasLightsGlow : MonoBehaviour
     {
         [Header("Target renderer (child name)")]
-        public string rendererChildName = "Christmas tree.007"; // from your Inspector
+        public string rendererChildName = "Christmas tree.007"; // renderer configured in the prefab
 
         [Header("Choose how to select materials")]
         public bool useIndices = true;                          // true => use slots; false => use names
 
         [Tooltip("Material slots that should glow (0-based)")]
-        public int[] glowSlots = new int[] { 2, 7, 8 };         // your 3 positions
+        public int[] glowSlots = new int[] { 2, 7, 8 };         // emissive material slots
 
         [Tooltip("Match by material name (contains, case-insensitive)")]
         public string[] glowNameContains = new string[] { "vray_Christmas Tree Set3_4.001" };
@@ -37,14 +37,14 @@ namespace Moonforged.ChristmasDecorations
             if (child != null) _rend = child.GetComponent<Renderer>();
             if (_rend == null)
             {
-                // fallback: first child renderer with many materials (like your tree part)
+                // fallback: child renderer with the largest material set
                 _rend = GetComponentsInChildren<Renderer>(true)
                         .OrderByDescending(r => r.sharedMaterials != null ? r.sharedMaterials.Length : 0)
                         .FirstOrDefault();
             }
             if (_rend == null) return;
 
-            // instance materials so we don't modify shared ones
+            // instance materials to preserve shared materials
             _mats = _rend.materials;
             _shouldGlow = new bool[_mats.Length];
 

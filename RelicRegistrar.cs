@@ -1,5 +1,4 @@
-﻿// Assets/Moonforged Christmas Decorations/Scripts/RelicRegistrar.cs
-using Jotunn.Configs;
+﻿using Jotunn.Configs;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using System.Collections.Generic;
@@ -179,9 +178,14 @@ namespace Moonforged.ChristmasDecorations
 
     // #23
 
+        // ===================== BOWS =====================
+
     // #24
 
-    // ===================== BOWS =====================
+        new RelicRegistration("M_Golden_Bow", "Golden Christmas Bow", new[] {
+        new RequirementConfig("LeatherScraps", 2),
+        new RequirementConfig("Blueberries", 2)
+    }, "A nice Bow to connect your garlands.", "building", 0, "Workbench"),
 
     // #25
     new RelicRegistration("M_BigblueChristmasbow", "Big Blue Christmas Bow", new[] {
@@ -248,6 +252,14 @@ namespace Moonforged.ChristmasDecorations
         new RequirementConfig("BarleyFlour", 1)
     }, "Is not a poop is a cake.", "building", 0, "Workbench"),
 
+    // #34.2
+        new RelicRegistration("M_Christmas_Celebration_Cake", "Christmas Celebration Cake", new[] {
+        new RequirementConfig("Wood", 1),
+        new RequirementConfig("Raspberry", 5),
+        new RequirementConfig("BarleyFlour", 1)
+    }, "A cake.", "building", 0, "Workbench"),
+
+
     // #35
     new RelicRegistration("M_Christmas_Wine", "Bottle of Wine", new[] {
         new RequirementConfig("Wood", 1),
@@ -288,16 +300,47 @@ namespace Moonforged.ChristmasDecorations
         // ===================== STOCKINGS & SNOWMAN =====================
 
     // #40
-    new RelicRegistration("M_Christmas_Stocking", "Christmas Stocking", new[] {
+    new RelicRegistration("M_Christmas_Stocking", "Green Christmas Stocking", new[] {
         new RequirementConfig("LeatherScraps", 1),
         new RequirementConfig("Bloodbag", 1)
     }, "", "building", 0, "Workbench"),
 
     // #41
-    new RelicRegistration("M_Christmas_Stocking_2", "Large Christmas Stocking", new[] {
+    new RelicRegistration("M_Christmas_Stocking_2", "Red Christmas Stocking", new[] {
         new RequirementConfig("LeatherScraps", 2),
         new RequirementConfig("Raspberry", 1)
     }, "", "building", 0, "Workbench"),
+
+        // #41.0
+    new RelicRegistration("M_Christmas_Stocking_3", "Blue Christmas Stocking", new[] {
+        new RequirementConfig("LeatherScraps", 2),
+        new RequirementConfig("Raspberry", 1)
+    }, "", "building", 0, "Workbench"),
+        
+    // #41.1
+    new RelicRegistration("M_Mitten_Left", "Left hand Mitten", new[] {
+        new RequirementConfig("LeatherScraps", 2),
+        new RequirementConfig("Raspberry", 1)
+    }, "", "building", 0, "Workbench"),
+
+        // #41.2
+    new RelicRegistration("M_Mitten_Right", "Right hand Mitten", new[] {
+        new RequirementConfig("LeatherScraps", 2),
+        new RequirementConfig("Raspberry", 1)
+    }, "", "building", 0, "Workbench"),
+
+        // #41.4
+    new RelicRegistration("M_Mitten_Left_Red", "Left hand Mitten Red", new[] {
+        new RequirementConfig("LeatherScraps", 2),
+        new RequirementConfig("Raspberry", 1)
+    }, "", "building", 0, "Workbench"),
+
+        // #41.3
+    new RelicRegistration("M_Mitten_Right_Red", "Right hand Mitten Red", new[] {
+        new RequirementConfig("LeatherScraps", 2),
+        new RequirementConfig("Raspberry", 1)
+    }, "", "building", 0, "Workbench"),
+
 
     // #42
     new RelicRegistration("M_Snowman", "Snowman", new[] {
@@ -460,11 +503,35 @@ namespace Moonforged.ChristmasDecorations
 
     // #65
 
-                new RelicRegistration("M_Wrapping_Table", "Christmas Wrapping Table.", new[] {
-                new RequirementConfig("Wood", 5),
-                new RequirementConfig("FineWood", 5)
+    new RelicRegistration("M_Wrapping_Table", "Christmas Wrapping Table.", new[] {
+         new RequirementConfig("Wood", 5),
+         new RequirementConfig("FineWood", 5)
 
-    }, "From this table you can create christmas gifts and decorations.", "building", 0, "")
+    }, "From this table you can create christmas gifts and decorations.", "building", 0, ""),
+
+    // #66
+    new RelicRegistration("M_Box", "Christmas Music Box", new[] {
+        new RequirementConfig("FineWood", 5),
+        new RequirementConfig("Bronze", 1)
+    }, "A hand-crafted wind-up Christmas music box.", "building", 0, "Workbench"),
+
+                // #67
+    new RelicRegistration("M_Sled", "Christmas Wooden Sled Decoration", new[] {
+        new RequirementConfig("FineWood", 5),
+        new RequirementConfig("Bronze", 1)
+    }, ".", "building", 0, "Workbench"),
+
+                    // #68
+    new RelicRegistration("M_Elf", "Santa`s Little Helper", new[] {
+        new RequirementConfig("FineWood", 5),
+        new RequirementConfig("Bronze", 1)
+    }, ".", "building", 0, "Workbench"),
+
+            // #69
+    new RelicRegistration("M_Elf2", "Santa`s Little Elfy", new[] {
+        new RequirementConfig("FineWood", 5),
+        new RequirementConfig("Bronze", 1)
+    }, ".", "building", 0, "Workbench")
 
 };
 
@@ -486,6 +553,17 @@ namespace Moonforged.ChristmasDecorations
         public static void RegisterAllRelics(AssetBundle bundle)
         {
             if (wasAlreadyRegistered) return;
+
+            GameObject musicBoxSoundPrefab = bundle != null
+                ? bundle.LoadAsset<GameObject>("sfx_M_Box")
+                : null;
+            MusicBoxInteract.ConfigureSound(musicBoxSoundPrefab);
+
+            GameObject trainSoundPrefab = bundle != null
+                ? bundle.LoadAsset<GameObject>("sfx_M_Train")
+                : null;
+            TrainPivotRotator.ConfigureTrainSound(trainSoundPrefab);
+
             foreach (var reg in AllRegistrations) RegisterRelic(bundle, reg);
 
             // Wrapped gifts + wrapping paper are ITEMS (not pieces) and are registered separately
@@ -523,6 +601,7 @@ namespace Moonforged.ChristmasDecorations
                 enforcer.desiredScale = Vector3.one * deerScale;
 
                 if (!prefab.GetComponent<DeerMarker>()) prefab.AddComponent<DeerMarker>();
+                if (!prefab.GetComponent<ReindeerPetInteract>()) prefab.AddComponent<ReindeerPetInteract>();
             }
 
             // Tree lights
@@ -556,19 +635,18 @@ namespace Moonforged.ChristmasDecorations
             if (reg.PrefabName == "M_Garland_Spiral_White")
                 ChristmasLightChaserInstaller.InstallOn(prefab, 1f, 4.4f,
                     new Color[] { Color.red, Color.yellow, Color.blue }, ChristmasLightChaser.AnimationMode.Chase);
-            // Icicle lamp – meteor dripping effect with staggered batches
+            // Icicle lamp – midpoint-staggered rain, freeze, drops, stars, and sparkles
             if (reg.PrefabName == "M_Icicle_Lamp")
             {
-                var flow = prefab.GetComponent<IcicleFlow>() ?? prefab.AddComponent<IcicleFlow>();
+                var flow = prefab.GetComponent<IcicleLampFlow>() ?? prefab.AddComponent<IcicleLampFlow>();
                 flow.columnNamePrefix = "Icicle_Lamp_";
-                flow.bulbNamePrefix = "Light";
-                flow.dripStepSeconds = 0.35f;
-                flow.pauseAfterColumn = 0.60f;
+                flow.bulbNamePrefix = "Light_";
+                flow.raindropStepSeconds = 0.05f;
+                flow.randomDropCount = 8;
+                flow.pauseBetweenAnimations = 0.60f;
+                flow.connectionDistance = 0.75f;
                 flow.emissionIntensity = 4.5f;
                 flow.dripColor = new Color(0.60f, 0.85f, 1.00f);
-                flow.batchCount = 4;
-                flow.batchSpacingSeconds = 4.0f;
-                flow.autoDetectVerticalAxis = true;
             }
 
 
@@ -584,6 +662,26 @@ namespace Moonforged.ChristmasDecorations
                 flow.batchCount = 4;
                 flow.batchSpacingSeconds = 4.0f;
                 flow.autoDetectVerticalAxis = true;
+            }
+
+            // Interaction and same-prefab synchronization for animated lights.
+            // M_Icicle_Lamp keeps its own IcicleLampFlow interaction menu.
+            if (reg.PrefabName == "M_Christmas_Tree_1" ||
+                reg.PrefabName == "Christmas_Lights1" ||
+                reg.PrefabName == "Christmas_Lights2" ||
+                reg.PrefabName == "MChristmas_Lights1" ||
+                reg.PrefabName == "MChristmas_LongLights1" ||
+                reg.PrefabName == "M_Garland_Spiral_Green" ||
+                reg.PrefabName == "M_Garland_Spiral_White" ||
+                reg.PrefabName == "MultiStar_Light" ||
+                reg.PrefabName == "8Meter_Town_Light")
+            {
+                var lightControl = prefab.GetComponent<ConnectedLightControl>() ??
+                                   prefab.AddComponent<ConnectedLightControl>();
+                lightControl.prefabIdentity = reg.PrefabName;
+                lightControl.connectionDistance = 0.35f;
+                lightControl.connectionRefreshSeconds = 0.25f;
+                lightControl.rapidBlinkSeconds = 0.03f;
             }
 
             // Sled ropes
@@ -610,7 +708,7 @@ namespace Moonforged.ChristmasDecorations
             if (reg.PrefabName == "M_Christmas_Train")
                 InstallTrainOrbit(prefab, degreesPerSecond: 18f, clockwise: false);
 
-            // ===================== WRAPPING BOX AUTO-ATTACH (ONLY NEW CODE) =====================
+            // ===================== WRAPPING BOX SETUP =====================
             if (reg.PrefabName == "M_Wrapping_Table")
             {
                 Transform box = prefab.transform.Find("Wrapping_Box");
@@ -618,8 +716,8 @@ namespace Moonforged.ChristmasDecorations
                 {
                     GameObject boxGO = box.gameObject;
 
-                    // Do not create/modify other components here.
-                    // Assumes Wrapping_Box already has ZNetView + Container from the prefab.
+                    // Preserve the existing prefab components.
+                    // ZNetView and Container are supplied by the prefab.
                     if (boxGO.GetComponent<WrappingBoxProcessor>() == null)
                     {
                         boxGO.AddComponent<WrappingBoxProcessor>();
@@ -628,7 +726,7 @@ namespace Moonforged.ChristmasDecorations
 
                 EnsureWrappingTableCraftEffects(prefab);
             }
-            // =================== END WRAPPING BOX AUTO-ATTACH (ONLY NEW CODE) ===================
+            // =================== END WRAPPING BOX SETUP ===================
 
             // Network & piece setup
             var znv = prefab.GetComponent<ZNetView>() ?? prefab.AddComponent<ZNetView>();
@@ -641,10 +739,16 @@ namespace Moonforged.ChristmasDecorations
             piece.m_description = reg.Description;
             piece.m_groundOnly = false;
 
+            if (StockingGiftStorage.IsStockingPrefabName(reg.PrefabName))
+                StockingGiftStorage.Install(prefab);
+
+            if (reg.PrefabName == "M_Box" && prefab.GetComponent<MusicBoxInteract>() == null)
+                prefab.AddComponent<MusicBoxInteract>();
+
             Sprite icon = bundle.LoadAsset<Sprite>(reg.PrefabName);
             if (icon != null) piece.m_icon = icon;
 
-            // ======== SOUND MAPPING (unchanged) ========
+            // ======== SOUND MAPPING ========
             var gifts = new HashSet<string>
             {
                 "M_Gift_BlackOrange_Valheim",
@@ -754,7 +858,7 @@ namespace Moonforged.ChristmasDecorations
             destroyFX.m_effectPrefabs = destroyArr.ToArray();
             wear.m_destroyedEffect = destroyFX;
 
-            // Jötunn registration — leave item names and stations exactly as provided
+            // Jötunn piece registration
             var config = new PieceConfig
             {
                 PieceTable = "Hammer",
@@ -781,7 +885,7 @@ namespace Moonforged.ChristmasDecorations
                 ZNetScene.instance?.GetPrefab("sfx_gui_craftitem_workbench_end");
 
 
-            // 🚫 no smoke VFX at all
+            // Smoke VFX intentionally disabled
             GameObject vfxCraft = null;
             GameObject vfxDone = null;
 
@@ -929,11 +1033,12 @@ namespace Moonforged.ChristmasDecorations
                 var col = ball.GetComponent<Collider>(); if (col) Object.Destroy(col);
             }
 
-            var rot = pivot.GetComponent<TrainPivotRotator>() ?? pivot.gameObject.AddComponent<TrainPivotRotator>();
+            var rot = prefab.GetComponent<TrainPivotRotator>() ?? prefab.AddComponent<TrainPivotRotator>();
+            rot.ConfigurePivot(pivot);
             rot.degreesPerSecond = clockwise ? Mathf.Abs(degreesPerSecond) : -Mathf.Abs(degreesPerSecond);
         }
 
-        // Keeps deer scale enforced at runtime; referenced above.
+        // Keeps deer scale enforced at runtime.
         private class ScaleEnforcer : MonoBehaviour
         {
             public Vector3 desiredScale = Vector3.one;

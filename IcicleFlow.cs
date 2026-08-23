@@ -23,8 +23,8 @@ namespace Moonforged.ChristmasDecorations
         [Header("Timing")]
         [Min(0.01f)] public float dripStepSeconds = 0.15f;       // time between bulbs lighting in a column
         [Min(0f)] public float pauseAfterColumn = 0.60f;         // pause before a column restarts
-        [Min(1)] public int batchCount = 3;                      // e.g. 3 => every 3rd column starts together
-        [Min(0f)] public float batchSpacingSeconds = 4f;         // delay between batches (your 4s)
+        [Min(1)] public int batchCount = 3;                      // every third column starts together by default
+        [Min(0f)] public float batchSpacingSeconds = 4f;         // delay between batches
 
         [Header("Advanced")]
         public bool includeInactive = true;                      // include disabled children
@@ -49,7 +49,8 @@ namespace Moonforged.ChristmasDecorations
         {
             public int columnIndex;                // 0..N-1 left->right in hierarchy order
             public int batch;                      // columnIndex % batchCount
-            public float cycleLength;              // bulbs*step + pause
+            public int activeIndex = -1;
+            public float nextStepTime;
             public List<Renderer> bulbs = new List<Renderer>();
             public List<MaterialPropertyBlock> mpb = new List<MaterialPropertyBlock>();
         }
@@ -66,13 +67,15 @@ namespace Moonforged.ChristmasDecorations
         {
             // ensure emission keywords/material blocks are ready
             PrepareMPBs();
+            _accum = 0f;
+            _isActive = false;
         }
 
         void Update()
         {
             if (_columns.Count == 0) return;
 
-            // ✅ Skip completely if no player is nearby
+            // Skip processing when no player is nearby
             if (activeDistance > 0f && !Player.IsPlayerInRange(transform.position, activeDistance))
             {
                 if (_isActive)
@@ -81,55 +84,61 @@ namespace Moonforged.ChristmasDecorations
                     for (int ci = 0; ci < _columns.Count; ci++)
                     {
                         SetColumnAll(_columns[ci], Color.black);
+                        _columns[ci].activeIndex = -1;
                     }
                     _isActive = false;
                 }
                 return;
             }
 
-            _isActive = true;
+            if (!_isActive)
+            {
+                _isActive = true;
+                ResetSequence(Time.time);
+            }
 
-            // ✅ Throttle heavy work to a max frequency
+            // Throttle processing to the configured frequency
             _accum += Time.deltaTime;
             if (_accum < minUpdateInterval) return;
             _accum = 0f;
 
             float now = Time.time;
 
-            // For each column, compute its local time with batch offset, then light exactly one bulb
+            // Advance each column by exactly one bulb per step so frame delays cannot skip bulbs
             for (int ci = 0; ci < _columns.Count; ci++)
             {
                 Column col = _columns[ci];
                 if (col.bulbs.Count == 0) continue;
 
-                // Batch offset: columns in batch 0 start immediately; batch 1 starts after +batchSpacing, etc.
-                float startOffset = col.batch * Mathf.Min(batchSpacingSeconds, col.cycleLength * 0.9f);
-                float t = now - startOffset;
-
-                if (t < 0f)
+                if (now < col.nextStepTime)
                 {
-                    // not started yet -> ensure all bulbs off
-                    SetColumnAll(col, Color.black);
                     continue;
                 }
 
-                float cycle = col.cycleLength;
-                if (cycle <= 0.0001f) cycle = 0.0001f;
-
-                float u = t % cycle; // time within cycle
-                int steps = col.bulbs.Count;
-                float litWindow = steps * Mathf.Max(0.01f, dripStepSeconds);
-
-                if (u >= 0f && u < litWindow)
+                if (col.activeIndex < col.bulbs.Count - 1)
                 {
-                    int activeIndex = Mathf.Clamp(Mathf.FloorToInt(u / Mathf.Max(0.01f, dripStepSeconds)), 0, steps - 1);
-                    SetColumnActive(col, activeIndex, dripColor);
+                    col.activeIndex++;
+                    SetColumnActive(col, col.activeIndex, dripColor);
+                    col.nextStepTime = now + Mathf.Max(0.01f, dripStepSeconds);
                 }
                 else
                 {
-                    // pause segment: everything off
                     SetColumnAll(col, Color.black);
+                    col.activeIndex = -1;
+                    col.nextStepTime = now + Mathf.Max(0f, pauseAfterColumn);
                 }
+            }
+        }
+
+        private void ResetSequence(float now)
+        {
+            float spacing = Mathf.Max(0f, batchSpacingSeconds);
+            for (int ci = 0; ci < _columns.Count; ci++)
+            {
+                Column col = _columns[ci];
+                col.activeIndex = -1;
+                col.nextStepTime = now + col.batch * spacing;
+                SetColumnAll(col, Color.black);
             }
         }
 
@@ -171,11 +180,11 @@ namespace Moonforged.ChristmasDecorations
                     continue;
 
                 // Sort bulbs top->bottom. Auto-detect vertical axis by which has larger range.
-                Axis axis = ResolveAxis(col.bulbs);
+                Axis axis = ResolveAxis(colT, col.bulbs);
                 col.bulbs.Sort((a, b) =>
                 {
-                    float av = GetLocalAxis(a.transform, axis);
-                    float bv = GetLocalAxis(b.transform, axis);
+                    float av = GetColumnAxis(colT, a.transform, axis);
+                    float bv = GetColumnAxis(colT, b.transform, axis);
                     // Descending (top first)
                     return -av.CompareTo(bv);
                 });
@@ -183,14 +192,11 @@ namespace Moonforged.ChristmasDecorations
                 // Init MPBs list
                 for (int k = 0; k < col.bulbs.Count; k++) col.mpb.Add(new MaterialPropertyBlock());
 
-                // Cycle length = (#bulbs * step) + pause
-                col.cycleLength = col.bulbs.Count * Mathf.Max(0.01f, dripStepSeconds) + Mathf.Max(0f, pauseAfterColumn);
-
                 _columns.Add(col);
             }
         }
 
-        private Axis ResolveAxis(List<Renderer> bulbs)
+        private Axis ResolveAxis(Transform columnRoot, List<Renderer> bulbs)
         {
             if (!autoDetectVerticalAxis)
                 return verticalAxis == Axis.Auto ? Axis.Z : verticalAxis;
@@ -200,8 +206,7 @@ namespace Moonforged.ChristmasDecorations
 
             for (int i = 0; i < bulbs.Count; i++)
             {
-                Transform t = bulbs[i].transform;
-                Vector3 lp = t.localPosition;
+                Vector3 lp = columnRoot.InverseTransformPoint(bulbs[i].transform.position);
                 if (lp.y < minY) minY = lp.y;
                 if (lp.y > maxY) maxY = lp.y;
                 if (lp.z < minZ) minZ = lp.z;
@@ -215,13 +220,14 @@ namespace Moonforged.ChristmasDecorations
             return Axis.Z;
         }
 
-        private float GetLocalAxis(Transform t, Axis axis)
+        private float GetColumnAxis(Transform columnRoot, Transform bulb, Axis axis)
         {
+            Vector3 localPosition = columnRoot.InverseTransformPoint(bulb.position);
             switch (axis)
             {
-                case Axis.Y: return t.localPosition.y;
-                case Axis.Z: return t.localPosition.z;
-                default: return t.localPosition.z;
+                case Axis.Y: return localPosition.y;
+                case Axis.Z: return localPosition.z;
+                default: return localPosition.z;
             }
         }
 

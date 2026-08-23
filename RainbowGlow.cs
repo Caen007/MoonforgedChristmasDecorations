@@ -2,7 +2,7 @@
 
 namespace Moonforged.ChristmasDecorations
 {
-    /// Glows & cycles color ONLY when the object is placed on an ItemStand (for M_Star).
+    /// Glows and cycles color when the object is placed on an ItemStand (for M_Star).
     public class RainbowGlow : MonoBehaviour
     {
         public float cycleSeconds = 10f;

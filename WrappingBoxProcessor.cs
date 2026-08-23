@@ -94,13 +94,13 @@ namespace Moonforged.ChristmasDecorations
         {
             wrapInProgress = true;
 
-            // 🔆 BLINK (RESTORED)
+            // Blink effect
             yield return StartCoroutine(BlinkRoutine(WRAP_DELAY));
 
-            // 🎁 WRAP
+            // Wrap item
             Wrap();
 
-            // 🔊 + 💨 END FX (RESTORED)
+            // Completion effects
             SpawnBuildSmoke();
             SpawnTamedFX();
 
@@ -160,7 +160,7 @@ namespace Moonforged.ChristmasDecorations
             inv.AddItem(giftItem);
         }
 
-        // 🔆 BLINK EFFECT (FULLY RESTORED)
+        // Blink effect
         private IEnumerator BlinkRoutine(float duration)
         {
             var renderers = GetComponentsInChildren<Renderer>(true);
@@ -196,7 +196,7 @@ namespace Moonforged.ChristmasDecorations
                     kv.Key.color = kv.Value;
         }
 
-        // 💨 END VFX
+        // Completion VFX
         private void SpawnBuildSmoke()
         {
             GameObject fx = ZNetScene.instance?.GetPrefab("vfx_PlacePiece");
@@ -204,7 +204,7 @@ namespace Moonforged.ChristmasDecorations
                 Instantiate(fx, transform.position + Vector3.up * 0.5f, Quaternion.identity);
         }
 
-        // 🔊 END SOUND
+        // Completion sound
         private void SpawnTamedFX()
         {
             GameObject fx = ZNetScene.instance?.GetPrefab("fx_creature_tamed");

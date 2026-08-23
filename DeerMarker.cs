@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Moonforged.ChristmasDecorations
 {
-    /// Tag for sled deer + global registry so we don't scan the whole scene.
+    /// Tag and global registry for sled deer.
     public class DeerMarker : MonoBehaviour
     {
         public static readonly HashSet<DeerMarker> All = new HashSet<DeerMarker>();

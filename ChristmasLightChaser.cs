@@ -1,7 +1,4 @@
-﻿// Assets/Moonforged Christmas Decorations/Scripts/ChristmasLightChaser.cs
-// UPDATED: supports modes (Chase / BlinkAll) and per-prefab palette override (e.g., white+yellow)
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Moonforged.ChristmasDecorations

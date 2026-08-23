@@ -154,7 +154,7 @@ namespace Moonforged.ChristmasDecorations
             }
             else
             {
-                // Update anchor locals & re-target if user renamed/added anchors
+                // Update local anchors and retarget changed deer anchors
                 for (int i = 0; i < _ropes.Count; i++)
                 {
                     _sledAnchors[i].localPosition = ComputeAnchorLocal(i, _ropes.Count);
@@ -173,7 +173,7 @@ namespace Moonforged.ChristmasDecorations
             var list = new List<Transform>();
             Vector3 myPos = transform.position;
 
-            // ✅ Use the DeerMarker registry instead of scanning the entire scene
+            // Use the DeerMarker registry for nearby deer
             foreach (var marker in DeerMarker.All)
             {
                 if (!marker) continue;

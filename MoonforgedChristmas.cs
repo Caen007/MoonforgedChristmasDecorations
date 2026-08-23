@@ -17,7 +17,7 @@ namespace Moonforged.ChristmasDecorations
     {
         public const string PluginGUID = "Moonforged.ChristmasDecorations";
         public const string PluginName = "Moonforged Christmas Decorations";
-        public const string PluginVersion = "1.0.3";
+        public const string PluginVersion = "1.0.5";
 
         private AssetBundle christmasBundle;
         private static readonly List<GameObject> placedObjects = new List<GameObject>();
@@ -43,7 +43,7 @@ namespace Moonforged.ChristmasDecorations
             PlayerPreferredCategory = Config.Bind(
                 "General",
                 "CustomHammerTab",
-                "Moonforged Christmas",
+                "Moonforged",
                 "Set the hammer tab where this mod's pieces should appear (e.g., Building, Furniture, Moonforged Christmas)"
             );
 
@@ -115,7 +115,7 @@ namespace Moonforged.ChristmasDecorations
             if (!IsGift(item))
                 return true;
 
-            // ✅ FIX: pass real Player instance (restart-safe)
+            // Pass the active Player instance for restart-safe gift use
             if (WrappedGiftUse.OnUse(item, __instance))
                 return false;
 

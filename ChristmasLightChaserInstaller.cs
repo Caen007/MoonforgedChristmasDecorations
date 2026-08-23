@@ -1,5 +1,5 @@
 ﻿// Assets/Moonforged Christmas Decorations/Scripts/ChristmasLightChaserInstaller.cs
-// Filters to ONLY bulb renderers: names starting with "Light", skips cable/snap/etc.
+// Filters bulb renderers by name while excluding cables and snap points.
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,12 +32,12 @@ namespace Moonforged.ChristmasDecorations
             comp.stepSeconds = stepSeconds;
             comp.emissionIntensity = emissionIntensity;
             comp.mode = mode;
-            // leave affectBaseColor = false (so we don’t tint albedo)
+            // Keep affectBaseColor disabled to preserve albedo
 
             if (paletteOverride != null && paletteOverride.Length > 0)
                 comp.paletteOverride = paletteOverride;
 
-            // 🔒 Strict bulbs-only selection
+            // Bulb-only renderer selection
             comp.targets = CollectBulbRenderers(prefabRoot,
                 includePrefixes: new[] { "light" },                // names starting with Light
                 ignoreContains: new[] { "cable", "wire", "string", "snap", "garland", "rope" }
