@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,12 +14,44 @@ namespace Moonforged.ChristmasDecorations
         private bool wasInUseLastFrame = false;
         private bool wrapInProgress = false;
 
+        private Vector3 restLocalPosition;
+        private Quaternion restLocalRotation;
+        private Coroutine idleShakeCoroutine;
+        private Coroutine completionAnimationCoroutine;
+        private float nextIdleShakeTime;
+
         private const float WRAP_DELAY = 3.8f;
+
+        // Small attention-grabbing idle shake. Kept intentionally subtle.
+        private const float IDLE_SHAKE_MIN_DELAY = 4f;
+        private const float IDLE_SHAKE_MAX_DELAY = 7.5f;
+        private const float IDLE_SHAKE_DURATION = 0.45f;
+        private const float IDLE_SHAKE_ROTATION_DEGREES = 2.25f;
+        private const float IDLE_SHAKE_SIDE_DISTANCE = 0.003f;
+
+        // Gift-complete animation: 5 cm hop + one full turn.
+        private const float COMPLETE_ANIMATION_DURATION = 0.9f;
+        private const float COMPLETE_JUMP_HEIGHT = 0.05f;
+        private const string COMPLETE_ANIMATION_RPC = "RPC_Moonforged_WrappingBoxComplete";
 
         private void Awake()
         {
             container = GetComponentInChildren<Container>(true);
             nview = GetComponent<ZNetView>();
+
+            restLocalPosition = transform.localPosition;
+            restLocalRotation = transform.localRotation;
+            ScheduleNextIdleShake();
+
+            if (nview != null)
+            {
+                nview.Register(COMPLETE_ANIMATION_RPC, new Action<long>(RPC_PlayCompletionAnimation));
+            }
+        }
+
+        private void OnDisable()
+        {
+            StopAllVisualAnimation();
         }
 
         private void Update()
@@ -26,10 +59,16 @@ namespace Moonforged.ChristmasDecorations
             if (container == null)
                 return;
 
-            if (nview != null && !nview.IsOwner())
-                return;
-
             bool isInUse = container.IsInUse();
+
+            UpdateIdleAnimation(isInUse);
+
+            // Only the ZNetView owner changes the inventory and starts wrapping.
+            if (nview != null && !nview.IsOwner())
+            {
+                wasInUseLastFrame = isInUse;
+                return;
+            }
 
             if (wasInUseLastFrame && !isInUse && !wrapInProgress)
             {
@@ -40,6 +79,89 @@ namespace Moonforged.ChristmasDecorations
             }
 
             wasInUseLastFrame = isInUse;
+        }
+
+        private void UpdateIdleAnimation(bool isInUse)
+        {
+            if (isInUse || wrapInProgress || completionAnimationCoroutine != null)
+            {
+                StopIdleShakeAndReset();
+                return;
+            }
+
+            if (idleShakeCoroutine == null && Time.time >= nextIdleShakeTime)
+            {
+                idleShakeCoroutine = StartCoroutine(IdleShakeRoutine());
+            }
+        }
+
+        private void ScheduleNextIdleShake()
+        {
+            nextIdleShakeTime = Time.time + UnityEngine.Random.Range(IDLE_SHAKE_MIN_DELAY, IDLE_SHAKE_MAX_DELAY);
+        }
+
+        private IEnumerator IdleShakeRoutine()
+        {
+            float elapsed = 0f;
+
+            while (elapsed < IDLE_SHAKE_DURATION)
+            {
+                if (container == null || container.IsInUse() || wrapInProgress)
+                    break;
+
+                float normalized = elapsed / IDLE_SHAKE_DURATION;
+                float envelope = Mathf.Sin(normalized * Mathf.PI);
+                float wave = Mathf.Sin(normalized * Mathf.PI * 6f);
+
+                float yaw = wave * envelope * IDLE_SHAKE_ROTATION_DEGREES;
+                float side = wave * envelope * IDLE_SHAKE_SIDE_DISTANCE;
+
+                transform.localPosition = restLocalPosition + Vector3.right * side;
+                transform.localRotation = restLocalRotation * Quaternion.Euler(0f, yaw, 0f);
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            RestoreRestTransform();
+            idleShakeCoroutine = null;
+            ScheduleNextIdleShake();
+        }
+
+        private void StopIdleShakeAndReset()
+        {
+            if (idleShakeCoroutine != null)
+            {
+                StopCoroutine(idleShakeCoroutine);
+                idleShakeCoroutine = null;
+                ScheduleNextIdleShake();
+            }
+
+            if (completionAnimationCoroutine == null)
+                RestoreRestTransform();
+        }
+
+        private void StopAllVisualAnimation()
+        {
+            if (idleShakeCoroutine != null)
+            {
+                StopCoroutine(idleShakeCoroutine);
+                idleShakeCoroutine = null;
+            }
+
+            if (completionAnimationCoroutine != null)
+            {
+                StopCoroutine(completionAnimationCoroutine);
+                completionAnimationCoroutine = null;
+            }
+
+            RestoreRestTransform();
+        }
+
+        private void RestoreRestTransform()
+        {
+            transform.localPosition = restLocalPosition;
+            transform.localRotation = restLocalRotation;
         }
 
         private bool IsWrappingPaper(ItemDrop.ItemData item)
@@ -55,8 +177,8 @@ namespace Moonforged.ChristmasDecorations
             if (string.IsNullOrEmpty(paperPrefabName))
                 return null;
 
-            if (paperPrefabName == "M_Gree_Gold_WrappingPaper")
-                return "M_Gree_Gold_Gift";
+            if (paperPrefabName == "M_Green_Gold_WrappingPaper")
+                return "M_Green_Gold_Gift";
 
             if (paperPrefabName == "M_WrappingPaper_SnowFlake_Blue")
                 return "M_SnowFlake_Blue";
@@ -93,18 +215,86 @@ namespace Moonforged.ChristmasDecorations
         private IEnumerator WrapSequence()
         {
             wrapInProgress = true;
+            StopIdleShakeAndReset();
 
-            // Blink effect
+            // Existing wrapping pulse while the box prepares the gift.
             yield return StartCoroutine(BlinkRoutine(WRAP_DELAY));
 
-            // Wrap item
+            // Wrap item first. The existing completion sound starts with the hop/spin.
             Wrap();
-
-            // Completion effects
-            SpawnBuildSmoke();
+            PlayCompletionAnimationForEveryone();
             SpawnTamedFX();
 
+            yield return new WaitForSeconds(COMPLETE_ANIMATION_DURATION);
+
+            // Existing completion VFX lands with the box back on the table.
+            SpawnBuildSmoke();
+
             wrapInProgress = false;
+            ScheduleNextIdleShake();
+        }
+
+        private void PlayCompletionAnimationForEveryone()
+        {
+            StopIdleShakeAndReset();
+
+            if (nview != null && nview.IsValid())
+            {
+                nview.InvokeRPC(ZNetView.Everybody, COMPLETE_ANIMATION_RPC, new object[0]);
+                return;
+            }
+
+            StartCompletionAnimation();
+        }
+
+        private void RPC_PlayCompletionAnimation(long sender)
+        {
+            StartCompletionAnimation();
+        }
+
+        private void StartCompletionAnimation()
+        {
+            if (completionAnimationCoroutine != null)
+            {
+                StopCoroutine(completionAnimationCoroutine);
+                completionAnimationCoroutine = null;
+            }
+
+            if (idleShakeCoroutine != null)
+            {
+                StopCoroutine(idleShakeCoroutine);
+                idleShakeCoroutine = null;
+            }
+
+            RestoreRestTransform();
+            completionAnimationCoroutine = StartCoroutine(CompletionAnimationRoutine());
+        }
+
+        private IEnumerator CompletionAnimationRoutine()
+        {
+            float elapsed = 0f;
+
+            while (elapsed < COMPLETE_ANIMATION_DURATION)
+            {
+                float normalized = Mathf.Clamp01(elapsed / COMPLETE_ANIMATION_DURATION);
+
+                // Sine arc: exactly 0 at start/end and 5 cm at the middle.
+                float height = Mathf.Sin(normalized * Mathf.PI) * COMPLETE_JUMP_HEIGHT;
+
+                // Smooth one-turn spin around the box's own Y axis.
+                float spinProgress = Mathf.SmoothStep(0f, 1f, normalized);
+                float spin = spinProgress * 360f;
+
+                transform.localPosition = restLocalPosition + Vector3.up * height;
+                transform.localRotation = restLocalRotation * Quaternion.Euler(0f, spin, 0f);
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            RestoreRestTransform();
+            completionAnimationCoroutine = null;
+            ScheduleNextIdleShake();
         }
 
         private void Wrap()
@@ -145,9 +335,6 @@ namespace Moonforged.ChristmasDecorations
                 { "wrapped_durability", content.m_durability.ToString(CultureInfo.InvariantCulture) }
             };
 
-            inv.RemoveItem(content);
-            inv.RemoveItem(paper);
-
             ItemDrop giftDrop = giftPrefab.GetComponent<ItemDrop>();
             if (giftDrop == null)
                 return;
@@ -157,6 +344,8 @@ namespace Moonforged.ChristmasDecorations
             giftItem.m_stack = 1;
             giftItem.m_customData = custom;
 
+            inv.RemoveItem(content);
+            inv.RemoveItem(paper);
             inv.AddItem(giftItem);
         }
 

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Moonforged.ChristmasDecorations
 {
@@ -587,7 +586,7 @@ namespace Moonforged.ChristmasDecorations
             if (prefab == null) return;
             prefab.name = reg.PrefabName;
 
-            if (reg.PrefabName == "M_Wrapping_Table")
+            if (reg.PrefabName == "M_Wrapping_Table" && prefab.GetComponent<WrappingBoxProxy>() == null)
                 prefab.AddComponent<WrappingBoxProxy>();
 
 
@@ -867,7 +866,7 @@ namespace Moonforged.ChristmasDecorations
                 Requirements = reg.Requirements
             };
 
-            PieceManager.Instance.AddPiece(new CustomPiece(prefab, true, config));
+            PieceManager.Instance.AddPiece(new CustomPiece(prefab, false, config));
         }
 
         private static void EnsureWrappingTableCraftEffects(GameObject wrappingTablePrefab)

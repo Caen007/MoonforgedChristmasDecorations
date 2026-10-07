@@ -141,6 +141,11 @@ namespace Moonforged.ChristmasDecorations
             return string.IsNullOrEmpty(prefabIdentity) ? "Christmas Lights" : prefabIdentity;
         }
 
+        public float GetHoverOffset()
+        {
+            return 0f;
+        }
+
         public string GetHoverText()
         {
             return

@@ -26,6 +26,11 @@ namespace Moonforged.ChristmasDecorations
             return "Wrapper";
         }
 
+        public float GetHoverOffset()
+        {
+            return 0f;
+        }
+
         public string GetHoverText()
         {
             if (processor != null && processor.CanWrap())

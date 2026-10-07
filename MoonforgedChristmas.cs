@@ -4,7 +4,6 @@ using HarmonyLib;
 using Jotunn.Managers;
 using Jotunn.Utils;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -17,16 +16,15 @@ namespace Moonforged.ChristmasDecorations
     {
         public const string PluginGUID = "Moonforged.ChristmasDecorations";
         public const string PluginName = "Moonforged Christmas Decorations";
-        public const string PluginVersion = "1.0.5";
+        public const string PluginVersion = "1.0.7";
 
         private AssetBundle christmasBundle;
-        private static readonly List<GameObject> placedObjects = new List<GameObject>();
-
         public static ConfigEntry<string> PlayerPreferredCategory;
 
         private void Awake()
         {
-            new Harmony("moonforged.christmas.scalingdebug").PatchAll();
+            var harmony = new Harmony(PluginGUID);
+            harmony.PatchAll();
 
             string resourcePath = "MoonforgedChristmasDecorations.christmas";
 
@@ -38,19 +36,12 @@ namespace Moonforged.ChristmasDecorations
                 return;
             }
 
-            TrackAllPrefabsInBundle(christmasBundle);
-
             PlayerPreferredCategory = Config.Bind(
                 "General",
                 "CustomHammerTab",
                 "Moonforged",
-                "Set the hammer tab where this mod's pieces should appear (e.g., Building, Furniture, Moonforged Christmas)"
+                "Set the build-menu category name where this mod's pieces should appear. You can use an existing category or create a new custom category."
             );
-
-            foreach (string category in RelicRegistrar.GetAllCategories())
-            {
-                PieceManager.Instance.AddPieceCategory(category);
-            }
 
             PrefabManager.OnPrefabsRegistered += () =>
             {
@@ -68,16 +59,6 @@ namespace Moonforged.ChristmasDecorations
             RelicRegistrar.RegisterAllRelics(bundle);
         }
 
-        public static void TrackAllPrefabsInBundle(AssetBundle bundle)
-        {
-            foreach (GameObject prefab in bundle.LoadAllAssets<GameObject>())
-            {
-                if (prefab != null && prefab.GetComponent<PlacementWatcher>() == null)
-                {
-                    prefab.AddComponent<PlacementWatcher>().RegisterList = placedObjects;
-                }
-            }
-        }
     }
 
     public static class EmbeddedAssetBundleLoader
@@ -92,9 +73,11 @@ namespace Moonforged.ChristmasDecorations
                     UnityEngine.Debug.LogError("AssetBundle resource not found: " + resourcePath);
                     return null;
                 }
-                byte[] buffer = new byte[stream.Length];
-                stream.Read(buffer, 0, buffer.Length);
-                return AssetBundle.LoadFromMemory(buffer);
+                using (var memory = new MemoryStream())
+                {
+                    stream.CopyTo(memory);
+                    return AssetBundle.LoadFromMemory(memory.ToArray());
+                }
             }
         }
     }

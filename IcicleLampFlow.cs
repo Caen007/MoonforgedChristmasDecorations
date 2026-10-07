@@ -286,6 +286,11 @@ namespace Moonforged.ChristmasDecorations
             return "Icicle Christmas Lights";
         }
 
+        public float GetHoverOffset()
+        {
+            return 0f;
+        }
+
         public string GetHoverText()
         {
             return
@@ -1461,6 +1466,11 @@ namespace Moonforged.ChristmasDecorations
         {
             IcicleLampFlow owner = GetOwner();
             return owner != null ? owner.GetHoverName() : "Icicle Christmas Lights";
+        }
+
+        public float GetHoverOffset()
+        {
+            return 0f;
         }
 
         public string GetHoverText()

@@ -139,6 +139,11 @@ namespace Moonforged.ChristmasDecorations
             return piece != null && !string.IsNullOrWhiteSpace(piece.m_name) ? piece.m_name : "Christmas Train";
         }
 
+        public float GetHoverOffset()
+        {
+            return 0f;
+        }
+
         private void RpcStartTrain(long sender)
         {
             if (!isMoving)

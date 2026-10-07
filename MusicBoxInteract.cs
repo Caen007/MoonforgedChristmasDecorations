@@ -152,6 +152,11 @@ namespace Moonforged.ChristmasDecorations
                 : "Christmas Music Box";
         }
 
+        public float GetHoverOffset()
+        {
+            return 0f;
+        }
+
         public string GetHoverText()
         {
             if (isWaitingToReset)
@@ -570,6 +575,11 @@ namespace Moonforged.ChristmasDecorations
         public string GetHoverName()
         {
             return target != null ? target.GetHoverName() : "Christmas Music Box";
+        }
+
+        public float GetHoverOffset()
+        {
+            return 0f;
         }
 
         public string GetHoverText()

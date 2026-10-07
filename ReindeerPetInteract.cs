@@ -72,6 +72,11 @@ namespace Moonforged.ChristmasDecorations
                 : "Santa's Reindeer";
         }
 
+        public float GetHoverOffset()
+        {
+            return 0f;
+        }
+
         public string GetHoverText()
         {
             return GetHoverName() + "\n[<color=yellow><b>E</b></color>] Pet";
@@ -122,6 +127,11 @@ namespace Moonforged.ChristmasDecorations
         public string GetHoverName()
         {
             return target != null ? target.GetHoverName() : "Santa's Reindeer";
+        }
+
+        public float GetHoverOffset()
+        {
+            return 0f;
         }
 
         public string GetHoverText()
