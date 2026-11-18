@@ -105,10 +105,10 @@
     <Compile Include="TrainPivotRotator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="christmas" />
+    <Analyzer Include="Libs\assembly_utils.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="Libs\assembly_utils.dll" />
+    <EmbeddedResource Include="christmas" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using Jotunn.Managers;
@@ -16,7 +16,7 @@ namespace Moonforged.ChristmasDecorations
     {
         public const string PluginGUID = "Moonforged.ChristmasDecorations";
         public const string PluginName = "Moonforged Christmas Decorations";
-        public const string PluginVersion = "1.0.7";
+        public const string PluginVersion = "1.0.8";
 
         private AssetBundle christmasBundle;
         public static ConfigEntry<string> PlayerPreferredCategory;
@@ -42,6 +42,8 @@ namespace Moonforged.ChristmasDecorations
                 "Moonforged",
                 "Set the build-menu category name where this mod's pieces should appear. You can use an existing category or create a new custom category."
             );
+
+            RelicRegistrar.BindGroupConfig(Config);
 
             PrefabManager.OnPrefabsRegistered += () =>
             {

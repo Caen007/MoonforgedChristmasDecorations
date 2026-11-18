@@ -1,9 +1,11 @@
-﻿using Jotunn.Configs;
+using BepInEx.Configuration;
+using Jotunn.Configs;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Moonforged.ChristmasDecorations
@@ -37,502 +39,575 @@ namespace Moonforged.ChristmasDecorations
         private static bool wasAlreadyRegistered = false;
         private static bool _starRegistered = false;
 
-        public static readonly List<RelicRegistration> AllRegistrations = new List<RelicRegistration>
-{
-    // ===================== TREES =====================
+        private sealed class RelicGroup
+        {
+            public readonly string Name;
+            public readonly RelicRegistration[] Registrations;
+            public ConfigEntry<bool> Enabled;
 
-    // #1 (removed 5th: PineCone)
-    new RelicRegistration("M_Christmas_Tree_1", "Town Square Christmas Tree", new[] {
-        new RequirementConfig("Wood", 30),
-        new RequirementConfig("Raspberry", 20),
-        new RequirementConfig("Blueberries", 20),
-        new RequirementConfig("Coal", 20)
-    }, "Large town square Christmas Tree, craft a Star in the workbench and place it on the top.", "building", 0, "Workbench"),
+            public RelicGroup(string name, RelicRegistration[] registrations)
+            {
+                Name = name;
+                Registrations = registrations;
+            }
+        }
 
-    // #2 (removed 5th: PineCone)
-    new RelicRegistration("M_Christmas_Tree_Small", "Small Christmas Tree", new[] {
-        new RequirementConfig("Wood", 10),
-        new RequirementConfig("Raspberry", 5),
-        new RequirementConfig("Blueberries", 5),
-        new RequirementConfig("Coal", 5)
-    }, "A small Christmas Tree, craft a Star in the workbench and place it on the top.", "building", 0, "Workbench"),
+        private static readonly RelicGroup[] Groups =
+        {
+            // ===================== TREES =====================
+            new RelicGroup("Trees", new RelicRegistration[]
+            {
+
+                // #1
+                new RelicRegistration("M_Christmas_Tree_1", "Town Square Christmas Tree", new[] {
+                    new RequirementConfig("Wood", 30),
+                    new RequirementConfig("Raspberry", 20),
+                    new RequirementConfig("Blueberries", 20),
+                    new RequirementConfig("Coal", 20)
+                }, "Large town square Christmas Tree, craft a Star in the workbench and place it on the top.", "building", 0, "Workbench"),
+
+                // #2
+                new RelicRegistration("M_Christmas_Tree_Small", "Small Christmas Tree", new[] {
+                    new RequirementConfig("Wood", 10),
+                    new RequirementConfig("Raspberry", 5),
+                    new RequirementConfig("Blueberries", 5),
+                    new RequirementConfig("Coal", 5)
+                }, "A small Christmas Tree, craft a Star in the workbench and place it on the top.", "building", 0, "Workbench"),
+
+                // #3
+                new RelicRegistration("M_White_Christmas_Tree_Small", "White Small Christmas Tree", new[] {
+                    new RequirementConfig("Wood", 10),
+                    new RequirementConfig("Raspberry", 5),
+                    new RequirementConfig("Blueberries", 5),
+                    new RequirementConfig("Coal", 5)
+                }, "A small Christmas Tree, craft a Star in the workbench and place it on the top.", "building", 0, "Workbench"),
+            }),
+
+            // ===================== GARLANDS, WREATH & MISTLETOE =====================
+            new RelicGroup("Garlands, Wreath and Mistletoe", new RelicRegistration[]
+            {
+
+                // #4
+                new RelicRegistration("M_Garland", "Green Christmas Garland", new[] {
+                    new RequirementConfig("FineWood", 2),
+                    new RequirementConfig("Raspberry", 2)
+                }, "A traditional Holiday decoration, you can link them with bows.", "building", 0, "Workbench"),
+
+                // #5
+                new RelicRegistration("M_Garland_White", "White Christmas Garland", new[] {
+                    new RequirementConfig("FineWood", 2),
+                    new RequirementConfig("Blueberries", 2)
+                }, "A traditional Holiday decoration, you can link them with bows.", "building", 0, "Workbench"),
+
+                // #6
+                new RelicRegistration("M_Garland_Spiral_Green", "Christmas Spiral Garland (Green)", new[] {
+                    new RequirementConfig("FineWood", 5),
+                    new RequirementConfig("PineCone", 1)
+                }, "They can be used arround pillars and poles.", "building", 0, "Workbench"),
+
+                // #7
+                new RelicRegistration("M_Garland_Spiral_White", "Christmas Spiral Garland (White)", new[] {
+                    new RequirementConfig("FineWood", 5),
+                    new RequirementConfig("PineCone", 1)
+                }, "They can be used arround pillars and poles.", "building", 0, "Workbench"),
+
+                // #8
+                new RelicRegistration("M_Christmas_Wreath", "Christmas Wreath", new[] {
+                    new RequirementConfig("FineWood", 1),
+                    new RequirementConfig("FirCone", 4),
+                    new RequirementConfig("Raspberry", 10)
+                }, "Brings a traditional feeling in your homes.", "building", 0, "Workbench"),
+
+                // #9
+                new RelicRegistration("M_mistletoe", "Christmas Mistletoe", new[] {
+                    new RequirementConfig("FineWood", 1),
+                    new RequirementConfig("JuteRed", 1)
+                }, "Kiss your partner or the troll under it.", "building", 0, "Workbench"),
+            }),
+
+            // ===================== LIGHTS & CHASERS =====================
+            new RelicGroup("Lights and Chasers", new RelicRegistration[]
+            {
+
+                // #10
+                new RelicRegistration("Christmas_Lights1", "Christmas Star Lights", new[] {
+                    new RequirementConfig("Crystal", 5)
+                }, "Nice Twinkly Star shaped Lights.", "building", 0, "Workbench"),
+
+                // #11
+                new RelicRegistration("Christmas_Lights2", "Christmas Snowflake Lights", new[] {
+                    new RequirementConfig("Crystal", 5)
+                }, "Nice Twinkly Snowflake shaped Lights", "building", 0, "Workbench"),
+
+                // #12
+                new RelicRegistration("MChristmas_Lights1", "Christmas Lights", new[] {
+                    new RequirementConfig("Raspberry", 5),
+                    new RequirementConfig("Blueberries", 5),
+                    new RequirementConfig("Coal", 5)
+                }, "Nice Twinkly Lights", "building", 0, "Workbench"),
+
+                // #13
+                new RelicRegistration("MChristmas_LongLights1", "Christmas Long Lights", new[] {
+                    new RequirementConfig("Raspberry", 5),
+                    new RequirementConfig("Blueberries", 5),
+                    new RequirementConfig("Coal", 5)
+                }, "Nice Twinkly Lights", "building", 0, "Workbench"),
+
+                // #14
+                new RelicRegistration("M_Icicle_Lamp", "Icicle Christmas Lights", new[] {
+                    new RequirementConfig("Crystal", 5)
+                }, "Glowing icicle light string that drips with blue light.", "building", 0, "Workbench"),
+
+                // #15
+                new RelicRegistration("MultiStar_Light", "Star Lights", new[] {
+                    new RequirementConfig("Crystal", 5)
+                }, "Glowing Multi Star lights.", "building", 0, "Workbench"),
+
+                // #16
+                new RelicRegistration("8Meter_Town_Light", "8 Meter Town Square Light", new[] {
+                    new RequirementConfig("Crystal", 5)
+                }, "Town Square Star Light Decoration.", "building", 0, "Workbench"),
+            }),
+
+            // ===================== SNOWFLAKES (HANGING / CRYSTAL) =====================
+            new RelicGroup("Snowflakes", new RelicRegistration[]
+            {
+
+                // #17
+                new RelicRegistration("M_Snowflake", "Christmas Hanging Snowflake Model I", new[] {
+                    new RequirementConfig("Crystal", 1)
+                }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
+
+                // #18
+                new RelicRegistration("M_Snowflake2", "Christmas Hanging Snowflake Model II", new[] {
+                    new RequirementConfig("Crystal", 1)
+                }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
+
+                // #19
+                new RelicRegistration("M_Snowflake3", "Christmas Hanging Snowflake Model III", new[] {
+                    new RequirementConfig("Crystal", 1)
+                }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
+
+                // #20
+                new RelicRegistration("M_Snowflake4", "Christmas Hanging Snowflake Model IV", new[] {
+                    new RequirementConfig("Crystal", 1)
+                }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
+            }),
+
+            // ===================== BOWS =====================
+            new RelicGroup("Bows", new RelicRegistration[]
+            {
+
+                // #21
+
+                    new RelicRegistration("M_Golden_Bow", "Golden Christmas Bow", new[] {
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Blueberries", 2)
+                }, "A nice Bow to connect your garlands.", "building", 0, "Workbench"),
+
+                // #22
+                new RelicRegistration("M_BigblueChristmasbow", "Big Blue Christmas Bow", new[] {
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Blueberries", 2)
+                }, "A nice Bow to connect your garlands.", "building", 0, "Workbench"),
+
+                // #23
+                new RelicRegistration("M_BigredChristmasbow", "Big Red Christmas Bow", new[] {
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Bloodbag", 1)
+                }, "A nice Bow to connect your garlands.", "building", 0, "Workbench"),
+            }),
+
+            // ===================== SWEETS & DRINKS (CUPS, COOKIES, CAKES, WINE) =====================
+            new RelicGroup("Sweets and Drinks", new RelicRegistration[]
+            {
+
+                // #24
+                new RelicRegistration("M_Cozy_Yule_Cup", "Cozy Yule Hot Cocoa Cup", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Coal", 1)
+                }, "", "building", 0, "Workbench"),
+
+                // #25
+                new RelicRegistration("M_Cozy_Candy_Cane_Cup", "Hot Cocoa Cup with a Candy Cane", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Coal", 1)
+                }, "", "building", 0, "Workbench"),
+
+                // #26
+                new RelicRegistration("Christmas_Cups3", "Hot Cocoa Cup with a Chocolate Tree", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Coal", 1)
+                    }, "", "building", 0, "Workbench"),
+
+                // #27
+                new RelicRegistration("M_MilkandCookiesforSanta", "Milk and Cookies for Santa", new[] {
+                    new RequirementConfig("Resin", 1),
+                    new RequirementConfig("Coal", 1)
+                }, "", "building", 0, "Workbench"),
+
+                // #28
+                new RelicRegistration("M_Gingerbread_Man", "Gingerbread Man", new[] {
+                    new RequirementConfig("Wood", 1)
+                }, "We finaly caught him!", "building", 0, "Workbench"),
+
+                // #29
+                new RelicRegistration("M_Christmas_Cake", "Christmas Cake on a Plate", new[] {
+                    new RequirementConfig("Stone", 1),
+                    new RequirementConfig("Blueberries", 5),
+                    new RequirementConfig("BarleyFlour", 1)
+                }, "Don`t eat it all, leave some for Santa.", "building", 0, "Workbench"),
+
+                // #30
+                new RelicRegistration("M_Christmas_Cake2", "Christmas Strawberry Cake on a Plate", new[] {
+                    new RequirementConfig("Stone", 1),
+                    new RequirementConfig("Raspberry", 5),
+                    new RequirementConfig("BarleyFlour", 1)
+                }, "Don`t eat it all, leave some for Santa.", "building", 0, "Workbench"),
+
+                // #31
+                new RelicRegistration("M_YuleLogCake", "Yule Log Cake", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Raspberry", 5),
+                    new RequirementConfig("BarleyFlour", 1)
+                }, "Is not a poop is a cake.", "building", 0, "Workbench"),
+
+                // #32
+                    new RelicRegistration("M_Christmas_Celebration_Cake", "Christmas Celebration Cake", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Raspberry", 5),
+                    new RequirementConfig("BarleyFlour", 1)
+                }, "A cake.", "building", 0, "Workbench"),
 
 
-    // ===================== GARLANDS, WREATH & MISTLETOE =====================
+                // #33
+                new RelicRegistration("M_Christmas_Wine", "Bottle of Wine", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Stone", 1),
+                    new RequirementConfig("Raspberry", 5)
+                }, "Moonforged Christmas Home made Wine for you all.", "building", 0, "Workbench"),
+            }),
 
-    // #3
-    new RelicRegistration("M_Garland", "Green Christmas Garland", new[] {
-        new RequirementConfig("FineWood", 2),
-        new RequirementConfig("Raspberry", 2)
-    }, "A traditional Holiday decoration, you can link them with bows.", "building", 0, "Workbench"),
+            // ===================== CANDY CANES (1 m) =====================
+            new RelicGroup("Candy Canes", new RelicRegistration[]
+            {
 
-    // #4
-    new RelicRegistration("M_Garland_White", "White Christmas Garland", new[] {
-        new RequirementConfig("FineWood", 2),
-        new RequirementConfig("Blueberries", 2)
-    }, "A traditional Holiday decoration, you can link them with bows.", "building", 0, "Workbench"),
+                // #34
+                new RelicRegistration("M_Red_Candy_Cane_1m", "Red Candy Cane", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Raspberry", 1),
+                    new RequirementConfig("Coal", 1)
+                }, "Candy Cane decorations.", "building", 0, "Workbench"),
 
-    // #5
-    new RelicRegistration("M_Garland_Spiral_Green", "Christmas Spiral Garland (Green)", new[] {
-        new RequirementConfig("FineWood", 5),
-        new RequirementConfig("PineCone", 1)
-    }, "They can be used arround pillars and poles.", "building", 0, "Workbench"),
+                // #35
+                new RelicRegistration("M_Green_Candy_Cane_1m", "Green Candy Cane", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Dandelion", 1)
+                }, "Candy Cane decorations.", "building", 0, "Workbench"),
 
-    // #6
-    new RelicRegistration("M_Garland_Spiral_White", "Christmas Spiral Garland (White)", new[] {
-        new RequirementConfig("FineWood", 5),
-        new RequirementConfig("PineCone", 1)
-    }, "They can be used arround pillars and poles.", "building", 0, "Workbench"),
+                // #36
+                new RelicRegistration("M_RedGreen_Candy_Cane_1m", "Red & Green Candy Cane", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Raspberry", 1),
+                    new RequirementConfig("Dandelion", 1)
+                }, "Candy Cane decorations.", "building", 0, "Workbench"),
 
-    // #7
-    new RelicRegistration("M_Christmas_Wreath", "Christmas Wreath", new[] {
-        new RequirementConfig("FineWood", 1),
-        new RequirementConfig("FirCone", 4),
-        new RequirementConfig("Raspberry", 10)
-    }, "Brings a traditional feeling in your homes.", "building", 0, "Workbench"),
+                // #37
+                new RelicRegistration("M_Green_Red_Candy_Cane_1m", "Green & Red Candy Cane", new[] {
+                    new RequirementConfig("Wood", 1),
+                    new RequirementConfig("Raspberry", 1),
+                    new RequirementConfig("Dandelion", 1)
+                }, "Candy Cane decorations.", "building", 0, "Workbench"),
+            }),
 
-    // #8
-    new RelicRegistration("M_mistletoe", "Christmas Mistletoe", new[] {
-        new RequirementConfig("FineWood", 1),
-        new RequirementConfig("JuteRed", 1)
-    }, "Kiss your partner or the troll under it.", "building", 0, "Workbench"),
+            // ===================== STOCKINGS & SNOWMAN =====================
+            new RelicGroup("Stockings and Snowman", new RelicRegistration[]
+            {
 
+                // #38
+                new RelicRegistration("M_Christmas_Stocking", "Green Christmas Stocking", new[] {
+                    new RequirementConfig("LeatherScraps", 1),
+                    new RequirementConfig("Bloodbag", 1)
+                }, "", "building", 0, "Workbench"),
 
-    // ===================== LIGHTS & CHASERS =====================
+                // #39
+                new RelicRegistration("M_Christmas_Stocking_2", "Red Christmas Stocking", new[] {
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Raspberry", 1)
+                }, "", "building", 0, "Workbench"),
 
-    // #9
-    new RelicRegistration("Christmas_Lights1", "Christmas Star Lights", new[] {
-        new RequirementConfig("Crystal", 5)
-    }, "Nice Twinkly Star shaped Lights.", "building", 0, "Workbench"),
-
-    // #10
-    new RelicRegistration("Christmas_Lights2", "Christmas Snowflake Lights", new[] {
-        new RequirementConfig("Crystal", 5)
-    }, "Nice Twinkly Snowflake shaped Lights", "building", 0, "Workbench"),
-
-    // #11
-    new RelicRegistration("MChristmas_Lights1", "Christmas Lights", new[] {
-        new RequirementConfig("Raspberry", 5),
-        new RequirementConfig("Blueberries", 5),
-        new RequirementConfig("Coal", 5)
-    }, "Nice Twinkly Lights", "building", 0, "Workbench"),
-
-    // #12
-    new RelicRegistration("MChristmas_LongLights1", "Christmas Long Lights", new[] {
-        new RequirementConfig("Raspberry", 5),
-        new RequirementConfig("Blueberries", 5),
-        new RequirementConfig("Coal", 5)
-    }, "Nice Twinkly Lights", "building", 0, "Workbench"),
-
-    // #13
-    new RelicRegistration("M_Icicle_Lamp", "Icicle Christmas Lights", new[] {
-        new RequirementConfig("Crystal", 5)
-    }, "Glowing icicle light string that drips with blue light.", "building", 0, "Workbench"),
-
-        // #13.1
-    new RelicRegistration("MultiStar_Light", "Star Lights", new[] {
-        new RequirementConfig("Crystal", 5)
-    }, "Glowing Multi Star lights.", "building", 0, "Workbench"),
-
-            // #13.2
-    new RelicRegistration("8Meter_Town_Light", "8 Meter Town Square Light", new[] {
-        new RequirementConfig("Crystal", 5)
-    }, "Town Square Star Light Decoration.", "building", 0, "Workbench"),
-
-
-    // ===================== SNOWFLAKES (HANGING / CRYSTAL) =====================
-
-    // #14
-    new RelicRegistration("M_Snowflake", "Christmas Hanging Snowflake Model I", new[] {
-        new RequirementConfig("Crystal", 1)
-    }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
-
-    // #15
-    new RelicRegistration("M_Snowflake2", "Christmas Hanging Snowflake Model II", new[] {
-        new RequirementConfig("Crystal", 1)
-    }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
-
-    // #16
-    new RelicRegistration("M_Snowflake3", "Christmas Hanging Snowflake Model III", new[] {
-        new RequirementConfig("Crystal", 1)
-    }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
-
-    // #17
-    new RelicRegistration("M_Snowflake4", "Christmas Hanging Snowflake Model IV", new[] {
-        new RequirementConfig("Crystal", 1)
-    }, "A Shiny Hanging Snowflake.", "building", 0, "Workbench"),
-
-
-    // ===================== New addons =====================
-
-    // #18
-
-    // #19
-
-    // #20
-
-    // #21
-
-    // #22
-
-    // #23
-
-        // ===================== BOWS =====================
-
-    // #24
-
-        new RelicRegistration("M_Golden_Bow", "Golden Christmas Bow", new[] {
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Blueberries", 2)
-    }, "A nice Bow to connect your garlands.", "building", 0, "Workbench"),
-
-    // #25
-    new RelicRegistration("M_BigblueChristmasbow", "Big Blue Christmas Bow", new[] {
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Blueberries", 2)
-    }, "A nice Bow to connect your garlands.", "building", 0, "Workbench"),
-
-    // #26
-    new RelicRegistration("M_BigredChristmasbow", "Big Red Christmas Bow", new[] {
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Bloodbag", 1)
-    }, "A nice Bow to connect your garlands.", "building", 0, "Workbench"),
-
-
-    // ===================== SWEETS & DRINKS (CUPS, COOKIES, CAKES, WINE) =====================
-
-    // #27
-    new RelicRegistration("M_Cozy_Yule_Cup", "Cozy Yule Hot Cocoa Cup", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Coal", 1)
-    }, "", "building", 0, "Workbench"),
-
-    // #28
-    new RelicRegistration("M_Cozy_Candy_Cane_Cup", "Hot Cocoa Cup with a Candy Cane", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Coal", 1)
-    }, "", "building", 0, "Workbench"),
-
-    // #29
-    new RelicRegistration("Christmas_Cups3", "Hot Cocoa Cup with a Chocolate Tree", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Coal", 1)
-        }, "", "building", 0, "Workbench"),
-
-    // #30
-    new RelicRegistration("M_MilkandCookiesforSanta", "Milk and Cookies for Santa", new[] {
-        new RequirementConfig("Resin", 1),
-        new RequirementConfig("Coal", 1)
-    }, "", "building", 0, "Workbench"),
-
-    // #31
-    new RelicRegistration("M_Gingerbread_Man", "Gingerbread Man", new[] {
-        new RequirementConfig("Wood", 1)
-    }, "We finaly caught him!", "building", 0, "Workbench"),
-
-    // #32
-    new RelicRegistration("M_Christmas_Cake", "Christmas Cake on a Plate", new[] {
-        new RequirementConfig("Stone", 1),
-        new RequirementConfig("Blueberries", 5),
-        new RequirementConfig("BarleyFlour", 1)
-    }, "Don`t eat it all, leave some for Santa.", "building", 0, "Workbench"),
-
-    // #33
-    new RelicRegistration("M_Christmas_Cake2", "Christmas Strawberry Cake on a Plate", new[] {
-        new RequirementConfig("Stone", 1),
-        new RequirementConfig("Raspberry", 5),
-        new RequirementConfig("BarleyFlour", 1)
-    }, "Don`t eat it all, leave some for Santa.", "building", 0, "Workbench"),
-
-    // #34
-    new RelicRegistration("M_YuleLogCake", "Yule Log Cake", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Raspberry", 5),
-        new RequirementConfig("BarleyFlour", 1)
-    }, "Is not a poop is a cake.", "building", 0, "Workbench"),
-
-    // #34.2
-        new RelicRegistration("M_Christmas_Celebration_Cake", "Christmas Celebration Cake", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Raspberry", 5),
-        new RequirementConfig("BarleyFlour", 1)
-    }, "A cake.", "building", 0, "Workbench"),
-
-
-    // #35
-    new RelicRegistration("M_Christmas_Wine", "Bottle of Wine", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Stone", 1),
-        new RequirementConfig("Raspberry", 5)
-    }, "Moonforged Christmas Home made Wine for you all.", "building", 0, "Workbench"),
-
-
-    // ===================== CANDY CANES (1 m) =====================
-
-    // #36
-    new RelicRegistration("M_Red_Candy_Cane_1m", "Red Candy Cane", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Raspberry", 1),
-        new RequirementConfig("Coal", 1)
-    }, "Candy Cane decorations.", "building", 0, "Workbench"),
-
-    // #37
-    new RelicRegistration("M_Green_Candy_Cane_1m", "Green Candy Cane", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Dandelion", 1)
-    }, "Candy Cane decorations.", "building", 0, "Workbench"),
-
-    // #38
-    new RelicRegistration("M_RedGreen_Candy_Cane_1m", "Red & Green Candy Cane", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Raspberry", 1),
-        new RequirementConfig("Dandelion", 1)
-    }, "Candy Cane decorations.", "building", 0, "Workbench"),
-
-    // #39
-    new RelicRegistration("M_Green_Red_Candy_Cane_1m", "Green & Red Candy Cane", new[] {
-        new RequirementConfig("Wood", 1),
-        new RequirementConfig("Raspberry", 1),
-        new RequirementConfig("Dandelion", 1)
-    }, "Candy Cane decorations.", "building", 0, "Workbench"),
-
-        // ===================== STOCKINGS & SNOWMAN =====================
-
-    // #40
-    new RelicRegistration("M_Christmas_Stocking", "Green Christmas Stocking", new[] {
-        new RequirementConfig("LeatherScraps", 1),
-        new RequirementConfig("Bloodbag", 1)
-    }, "", "building", 0, "Workbench"),
-
-    // #41
-    new RelicRegistration("M_Christmas_Stocking_2", "Red Christmas Stocking", new[] {
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Raspberry", 1)
-    }, "", "building", 0, "Workbench"),
-
-        // #41.0
-    new RelicRegistration("M_Christmas_Stocking_3", "Blue Christmas Stocking", new[] {
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Raspberry", 1)
-    }, "", "building", 0, "Workbench"),
+                // #40
+                new RelicRegistration("M_Christmas_Stocking_3", "Blue Christmas Stocking", new[] {
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Raspberry", 1)
+                }, "", "building", 0, "Workbench"),
         
-    // #41.1
-    new RelicRegistration("M_Mitten_Left", "Left hand Mitten", new[] {
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Raspberry", 1)
-    }, "", "building", 0, "Workbench"),
+                // #41
+                new RelicRegistration("M_Mitten_Left", "Left hand Mitten", new[] {
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Raspberry", 1)
+                }, "", "building", 0, "Workbench"),
 
-        // #41.2
-    new RelicRegistration("M_Mitten_Right", "Right hand Mitten", new[] {
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Raspberry", 1)
-    }, "", "building", 0, "Workbench"),
+                // #42
+                new RelicRegistration("M_Mitten_Right", "Right hand Mitten", new[] {
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Raspberry", 1)
+                }, "", "building", 0, "Workbench"),
 
-        // #41.4
-    new RelicRegistration("M_Mitten_Left_Red", "Left hand Mitten Red", new[] {
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Raspberry", 1)
-    }, "", "building", 0, "Workbench"),
+                // #43
+                new RelicRegistration("M_Mitten_Left_Red", "Left hand Mitten Red", new[] {
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Raspberry", 1)
+                }, "", "building", 0, "Workbench"),
 
-        // #41.3
-    new RelicRegistration("M_Mitten_Right_Red", "Right hand Mitten Red", new[] {
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Raspberry", 1)
-    }, "", "building", 0, "Workbench"),
-
-
-    // #42
-    new RelicRegistration("M_Snowman", "Snowman", new[] {
-        new RequirementConfig("Wood", 3),
-        new RequirementConfig("Coal", 5),
-        new RequirementConfig("Carrot", 1)
-    }, "", "building", 0, "Workbench"),
+                // #44
+                new RelicRegistration("M_Mitten_Right_Red", "Right hand Mitten Red", new[] {
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Raspberry", 1)
+                }, "", "building", 0, "Workbench"),
 
 
-    // ===================== SANTA & FRIENDS (FIGURINES, BAG, BOOT, CARVINGS) =====================
+                // #45
+                new RelicRegistration("M_Snowman", "Snowman", new[] {
+                    new RequirementConfig("Wood", 3),
+                    new RequirementConfig("Coal", 5),
+                    new RequirementConfig("Carrot", 1)
+                }, "", "building", 0, "Workbench"),
 
-    // #43
-    new RelicRegistration("M_SantaClaus", "Santa Claus", new[] {
-        new RequirementConfig("FineWood", 10),
-        new RequirementConfig("LeatherScraps", 10),
-        new RequirementConfig("Raspberry", 10),
-        new RequirementConfig("Coal", 5)
-    }, "Saint Nicholas", "building", 0, "Workbench"),
+                // #46
+                new RelicRegistration("M_Small_Snowman", "Small Cute Snowman", new[] {
+                    new RequirementConfig("Wood", 2),
+                    new RequirementConfig("Coal", 3),
+                    new RequirementConfig("Carrot", 1)
+                }, "", "building", 0, "Workbench"),
+            }),
 
-    // #44
-    new RelicRegistration("M_Small_Santa_Claus", "Small Santa Claus Figurine", new[] {
-        new RequirementConfig("FineWood", 2),
-        new RequirementConfig("LeatherScraps", 3),
-        new RequirementConfig("Raspberry", 3),
-        new RequirementConfig("Coal", 1)
-    }, "He`s always watching, what a creep.", "building", 0, "Workbench"),
+            // ===================== SANTA & FRIENDS (FIGURINES, BAG, BOOT, CARVINGS) =====================
+            new RelicGroup("Santa and Friends", new RelicRegistration[]
+            {
 
-    // #45
-    new RelicRegistration("M_SantaBag", "Santa’s Bag of Gifts", new[] {
-        new RequirementConfig("Wood", 2),
-        new RequirementConfig("LeatherScraps", 10)
-    }, "Wonder whats inside?", "building", 0, "Workbench"),
+                // #47
+                new RelicRegistration("M_SantaClaus", "Santa Claus", new[] {
+                    new RequirementConfig("FineWood", 10),
+                    new RequirementConfig("LeatherScraps", 10),
+                    new RequirementConfig("Raspberry", 10),
+                    new RequirementConfig("Coal", 5)
+                }, "Saint Nicholas", "building", 0, "Workbench"),
 
-    // #46
-    new RelicRegistration("M_boot", "Santa’s Boot of Gifts and Flowers", new[] {
-        new RequirementConfig("Wood", 2),
-        new RequirementConfig("Raspberry", 2)
-    }, "You can put gifts or flowers inside the boot.", "building", 0, "Workbench"),
-
-    // #47
-    new RelicRegistration("M_Nutcracker", "Nutcracker Figurine", new[] {
-        new RequirementConfig("FineWood", 1)
-    }, "Wooden figurine with a hinged mouth for cracking nuts.", "building", 0, "Workbench"),
-
-    // #48
-
-    // #49
-
-
-    // ===================== DEER, SLED & TRAIN =====================
-
-    // #50
-    new RelicRegistration("M_Deer", "Santa’s Reindeers", new[] {
-        new RequirementConfig("DeerMeat", 4),
-        new RequirementConfig("DeerHide", 4)
-    }, "Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Donner, Blitzen", "building", 0, "Workbench"),
-
-    // #51
-    new RelicRegistration("M_Deer_Rudy", "Rudolph the Red-Nosed Reindeer", new[] {
-        new RequirementConfig("DeerMeat", 4),
-        new RequirementConfig("DeerHide", 4),
-        new RequirementConfig("Raspberry", 1)
-    }, "A very shiny nose. You might even say it glows.", "building", 0, "Workbench"),
-
-    // #52
-    new RelicRegistration("M_Christmas_Sled", "Santa’s Sled", new[] {
-        new RequirementConfig("Wood", 40),
-        new RequirementConfig("BronzeNails", 20),
-        new RequirementConfig("Bronze", 5)
-    }, "Sanat`s Christmas Sled, you can sit in it.", "building", 0, "Forge"),
-
-    // #53
-    new RelicRegistration("M_Christmas_Train", "Christmas Train", new[] {
-        new RequirementConfig("FineWood", 5),
-        new RequirementConfig("Iron", 1)
-    }, "A small train that runs around its track and you can ride it round and round.", "building", 0, "Forge"),
-
-
-    // ===================== BANNERS & THRONE =====================
-
-    // #54 (removed 5th: Coal)
-    new RelicRegistration("M_Christmas_Banner_1", "Santa`s Christmas Banner I", new[] {
-        new RequirementConfig("LeatherScraps", 6),
-        new RequirementConfig("FineWood", 2),
-        new RequirementConfig("Raspberry", 2),
-        new RequirementConfig("Guck", 1)
-    }, "Reindeers under the mistletoe", "building", 0, "Workbench"),
-
-    // #55 (removed 5th: Coal)
-    new RelicRegistration("M_Christmas_Banner_2", "Santa`s Christmas Banner II", new[] {
-        new RequirementConfig("LeatherScraps", 6),
-        new RequirementConfig("FineWood", 2),
-        new RequirementConfig("Raspberry", 2),
-        new RequirementConfig("Guck", 1)
-    }, "Jingle bells", "building", 0, "Workbench"),
-
-    // #56
-    new RelicRegistration("M_Christmas_Banner_4", "Santa`s Christmas Banner IV", new[] {
-        new RequirementConfig("LeatherScraps", 6),
-        new RequirementConfig("FineWood", 2),
-        new RequirementConfig("Raspberry", 2),
-        new RequirementConfig("Coal", 1)
-    }, "Reindeers under the evening star.", "building", 0, "Workbench"),
-
-    // #57
-    new RelicRegistration("M_Bench", "Santa`s Christmas Bench", new[] {
-        new RequirementConfig("FineWood", 5),
-        new RequirementConfig("Iron", 2)
-    }, "", "building", 0, "Forge"),
-
-    // #58
-    new RelicRegistration("M_Christmas_Throne", "Santa`s Christmas Throne", new[] {
-        new RequirementConfig("FineWood", 20),
-        new RequirementConfig("BronzeNails", 10),
-        new RequirementConfig("JuteRed", 2)
-    }, "Sit on Santa`s lap and tell him what you want for christmas.", "building", 0, "Forge"),
-
-
-
-    // ===================== STAR (CRAFTED ITEM) =====================
-
-    // #59
-    new RelicRegistration("M_Star", "Evening Star", new[] {
-        new RequirementConfig("Crystal", 2)
-    }, "Can be placed on top of the Christmas tree", "building", 0, "Workbench"),
-
-
-    // ===================== REGIONAL =====================
-
-    // #60
-    new RelicRegistration("Tio_de_Nadal", "Tió de Nadal", new[] {
-        new RequirementConfig("RoundLog", 2),
-        new RequirementConfig("LeatherScraps", 2),
-        new RequirementConfig("Raspberry", 1)
-    }, "", "building", 0, "Workbench"),
+                // #48
+                new RelicRegistration("M_Sitting_Santa", "Sitting Santa", new[] {
+                    new RequirementConfig("FineWood", 10),
+                    new RequirementConfig("LeatherScraps", 10),
+                    new RequirementConfig("Raspberry", 10),
+                    new RequirementConfig("Coal", 5)
+                }, "Saint Nicholas", "building", 0, "Workbench"),
 
     
-    // #61
-    new RelicRegistration("M_icicles", "An Icicle.", new[] {
-        new RequirementConfig("Crystal", 1)
-    }, "Dripping ice decoration.", "building", 0, "Workbench"),
+
+
+                // #49
+                new RelicRegistration("M_Small_Santa_Claus", "Small Santa Claus Figurine", new[] {
+                    new RequirementConfig("FineWood", 2),
+                    new RequirementConfig("LeatherScraps", 3),
+                    new RequirementConfig("Raspberry", 3),
+                    new RequirementConfig("Coal", 1)
+                }, "He`s always watching, what a creep.", "building", 0, "Workbench"),
+
+                // #50
+                new RelicRegistration("M_SantaBag", "Santa’s Bag of Gifts", new[] {
+                    new RequirementConfig("Wood", 2),
+                    new RequirementConfig("LeatherScraps", 10)
+                }, "Wonder whats inside?", "building", 0, "Workbench"),
+
+                // #51
+                new RelicRegistration("M_boot", "Santa’s Boot of Gifts and Flowers", new[] {
+                    new RequirementConfig("Wood", 2),
+                    new RequirementConfig("Raspberry", 2)
+                }, "You can put gifts or flowers inside the boot.", "building", 0, "Workbench"),
+
+                // #52
+                new RelicRegistration("M_Yuletide_Elf_Boots", "Yuletide Elf Boots", new[] {
+                    new RequirementConfig("Wood", 2),
+                    new RequirementConfig("LeatherScraps", 2)
+                }, "", "building", 0, "Workbench"), 
+    
+                // #53
+                new RelicRegistration("M_Nutcracker", "Nutcracker Figurine", new[] {
+                    new RequirementConfig("FineWood", 1)
+                }, "Wooden figurine with a hinged mouth for cracking nuts.", "building", 0, "Workbench"),
+            }),
+
+            // ===================== DEER, SLED & TRAIN =====================
+            new RelicGroup("Deer, Sled and Train", new RelicRegistration[]
+            {
+
+                // #54
+                new RelicRegistration("M_Deer", "Santa’s Reindeers", new[] {
+                    new RequirementConfig("DeerMeat", 4),
+                    new RequirementConfig("DeerHide", 4)
+                }, "Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Donner, Blitzen", "building", 0, "Workbench"),
+
+                // #55
+                new RelicRegistration("M_Deer_Rudy", "Rudolph the Red-Nosed Reindeer", new[] {
+                    new RequirementConfig("DeerMeat", 4),
+                    new RequirementConfig("DeerHide", 4),
+                    new RequirementConfig("Raspberry", 1)
+                }, "A very shiny nose. You might even say it glows.", "building", 0, "Workbench"),
+
+                // #56
+                new RelicRegistration("M_Christmas_Sled", "Santa’s Sled", new[] {
+                    new RequirementConfig("Wood", 40),
+                    new RequirementConfig("BronzeNails", 20),
+                    new RequirementConfig("Bronze", 5)
+                }, "Sanat`s Christmas Sled, you can sit in it.", "building", 0, "Forge"),
+
+                // #57
+                new RelicRegistration("M_Christmas_Train", "Christmas Train", new[] {
+                    new RequirementConfig("FineWood", 5),
+                    new RequirementConfig("Iron", 1)
+                }, "A small train that runs around its track and you can ride it round and round.", "building", 0, "Forge"),
+            }),
+
+            // ===================== BANNERS & THRONE =====================
+            new RelicGroup("Banners and Throne", new RelicRegistration[]
+            {
+
+                // #58 (removed 5th: Coal)
+                new RelicRegistration("M_Christmas_Banner_1", "Santa`s Christmas Banner I", new[] {
+                    new RequirementConfig("LeatherScraps", 6),
+                    new RequirementConfig("FineWood", 2),
+                    new RequirementConfig("Raspberry", 2),
+                    new RequirementConfig("Guck", 1)
+                }, "Reindeers under the mistletoe", "building", 0, "Workbench"),
+
+                // #59 (removed 5th: Coal)
+                new RelicRegistration("M_Christmas_Banner_2", "Santa`s Christmas Banner II", new[] {
+                    new RequirementConfig("LeatherScraps", 6),
+                    new RequirementConfig("FineWood", 2),
+                    new RequirementConfig("Raspberry", 2),
+                    new RequirementConfig("Guck", 1)
+                }, "Jingle bells", "building", 0, "Workbench"),
+
+                // #60
+                new RelicRegistration("M_Christmas_Banner_4", "Santa`s Christmas Banner IV", new[] {
+                    new RequirementConfig("LeatherScraps", 6),
+                    new RequirementConfig("FineWood", 2),
+                    new RequirementConfig("Raspberry", 2),
+                    new RequirementConfig("Coal", 1)
+                }, "Reindeers under the evening star.", "building", 0, "Workbench"),
+
+                // #61
+                new RelicRegistration("M_Bench", "Santa`s Christmas Bench", new[] {
+                    new RequirementConfig("FineWood", 5),
+                    new RequirementConfig("Iron", 2)
+                }, "", "building", 0, "Forge"),
 
                 // #62
-    new RelicRegistration("ChirstmasMozaic_1", "Snowman Stained-Glass Window.", new[] {
-        new RequirementConfig("Crystal", 1),
-        new RequirementConfig("FineWood", 4)
-    }, "", "building", 0, "Workbench"),
+                new RelicRegistration("M_Christmas_Throne", "Santa`s Christmas Throne", new[] {
+                    new RequirementConfig("FineWood", 20),
+                    new RequirementConfig("BronzeNails", 10),
+                    new RequirementConfig("JuteRed", 2)
+                }, "Sit on Santa`s lap and tell him what you want for christmas.", "building", 0, "Forge"),
+            }),
 
-                            // #63
-    new RelicRegistration("ChirstmasMozaic_2", "Santa`s Stained-Glass Window.", new[] {
-        new RequirementConfig("Crystal", 1),
-        new RequirementConfig("FineWood", 4)
-    }, "", "building", 0, "Workbench"),
+            // ===================== STAR (CRAFTED ITEM) =====================
+            new RelicGroup("Crafted Star", new RelicRegistration[]
+            {
 
-                                // #64
-    new RelicRegistration("ChristmasHouseMozaic", "Christmas Home Stained-Glass Window.", new[] {
-        new RequirementConfig("Crystal", 1),
-        new RequirementConfig("FineWood", 4)
-    }, "", "building", 0, "Workbench"),
+                // #63
+                new RelicRegistration("M_Star", "Evening Star", new[] {
+                    new RequirementConfig("Crystal", 2)
+                }, "Can be placed on top of the Christmas tree", "building", 0, "Workbench"),
+            }),
 
-    // #65
+            // ===================== REGIONAL =====================
+            new RelicGroup("Regional", new RelicRegistration[]
+            {
 
-    new RelicRegistration("M_Wrapping_Table", "Christmas Wrapping Table.", new[] {
-         new RequirementConfig("Wood", 5),
-         new RequirementConfig("FineWood", 5)
+                // #64
+                new RelicRegistration("Tio_de_Nadal", "Tió de Nadal", new[] {
+                    new RequirementConfig("RoundLog", 2),
+                    new RequirementConfig("LeatherScraps", 2),
+                    new RequirementConfig("Raspberry", 1)
+                }, "", "building", 0, "Workbench"),
 
-    }, "From this table you can create christmas gifts and decorations.", "building", 0, ""),
+    
+                // #65
+                new RelicRegistration("M_icicles", "An Icicle.", new[] {
+                    new RequirementConfig("Crystal", 1)
+                }, "Dripping ice decoration.", "building", 0, "Workbench"),
 
-    // #66
-    new RelicRegistration("M_Box", "Christmas Music Box", new[] {
-        new RequirementConfig("FineWood", 5),
-        new RequirementConfig("Bronze", 1)
-    }, "A hand-crafted wind-up Christmas music box.", "building", 0, "Workbench"),
+                // #66
+                new RelicRegistration("ChirstmasMozaic_1", "Snowman Stained-Glass Window.", new[] {
+                    new RequirementConfig("Crystal", 1),
+                    new RequirementConfig("FineWood", 4)
+                }, "", "building", 0, "Workbench"),
 
                 // #67
-    new RelicRegistration("M_Sled", "Christmas Wooden Sled Decoration", new[] {
-        new RequirementConfig("FineWood", 5),
-        new RequirementConfig("Bronze", 1)
-    }, ".", "building", 0, "Workbench"),
+                new RelicRegistration("ChirstmasMozaic_2", "Santa`s Stained-Glass Window.", new[] {
+                    new RequirementConfig("Crystal", 1),
+                    new RequirementConfig("FineWood", 4)
+                }, "", "building", 0, "Workbench"),
 
-                    // #68
-    new RelicRegistration("M_Elf", "Santa`s Little Helper", new[] {
-        new RequirementConfig("FineWood", 5),
-        new RequirementConfig("Bronze", 1)
-    }, ".", "building", 0, "Workbench"),
+                // #68
+                new RelicRegistration("ChristmasHouseMozaic", "Christmas Home Stained-Glass Window.", new[] {
+                    new RequirementConfig("Crystal", 1),
+                    new RequirementConfig("FineWood", 4)
+                }, "", "building", 0, "Workbench"),
 
-            // #69
-    new RelicRegistration("M_Elf2", "Santa`s Little Elfy", new[] {
-        new RequirementConfig("FineWood", 5),
-        new RequirementConfig("Bronze", 1)
-    }, ".", "building", 0, "Workbench")
+                // #69
 
-};
+                new RelicRegistration("M_Wrapping_Table", "Christmas Wrapping Table.", new[] {
+                     new RequirementConfig("Wood", 5),
+                     new RequirementConfig("FineWood", 5)
+
+                }, "From this table you can create christmas gifts and decorations.", "building", 0, ""),
+
+                // #70
+                new RelicRegistration("M_Box", "Christmas Music Box", new[] {
+                    new RequirementConfig("FineWood", 5),
+                    new RequirementConfig("Bronze", 1)
+                }, "A hand-crafted wind-up Christmas music box.", "building", 0, "Workbench"),
+
+                // #71
+                new RelicRegistration("M_Sled", "Christmas Wooden Sled Decoration", new[] {
+                    new RequirementConfig("FineWood", 5),
+                    new RequirementConfig("Bronze", 1)
+                }, ".", "building", 0, "Workbench"),
+
+                // #72
+                new RelicRegistration("M_Elf", "Santa`s Little Helper", new[] {
+                    new RequirementConfig("FineWood", 5),
+                    new RequirementConfig("Bronze", 1)
+                }, ".", "building", 0, "Workbench"),
+
+                // #73
+                new RelicRegistration("M_Elf2", "Santa`s Little Elfy", new[] {
+                    new RequirementConfig("FineWood", 5),
+                    new RequirementConfig("Bronze", 1)
+                }, ".", "building", 0, "Workbench"),
+            
+                // #74
+                new RelicRegistration("M_Wood_Deer_Ornament", "Wooden Deer Ornament", new[] {
+                    new RequirementConfig("FineWood", 5),
+                    new RequirementConfig("Coal", 1)
+                }, ".", "building", 0, "Workbench")
+            }),
+        };
+
+        public static readonly List<RelicRegistration> AllRegistrations =
+            Groups.SelectMany(group => group.Registrations).ToList();
+
+        public static void BindGroupConfig(ConfigFile config)
+        {
+            foreach (var group in Groups)
+            {
+                string description = group.Name == "Crafted Star"
+                    ? "Allow crafting the Christmas star. Existing stars remain available in the world and inventories."
+                    : $"Show {group.Name} in the hammer menu. Existing pieces remain in the world.";
+                group.Enabled = config.Bind("Decoration Groups", group.Name, true, description + " Restart Valheim to apply changes.");
+            }
+        }
 
         public static IEnumerable<string> GetAllCategories() =>
             AllRegistrations.Select(r => CategoryToTab(r.Category)).Distinct();
@@ -563,7 +638,12 @@ namespace Moonforged.ChristmasDecorations
                 : null;
             TrainPivotRotator.ConfigureTrainSound(trainSoundPrefab);
 
-            foreach (var reg in AllRegistrations) RegisterRelic(bundle, reg);
+            foreach (var group in Groups)
+            {
+                bool enabled = group.Enabled?.Value ?? true;
+                foreach (var reg in group.Registrations)
+                    RegisterRelic(bundle, reg, enabled);
+            }
 
             // Wrapped gifts + wrapping paper are ITEMS (not pieces) and are registered separately
             WrappedGiftItemRegistrar.Register(bundle);
@@ -572,13 +652,13 @@ namespace Moonforged.ChristmasDecorations
             wasAlreadyRegistered = true;
         }
 
-        private static void RegisterRelic(AssetBundle bundle, RelicRegistration reg)
+        private static void RegisterRelic(AssetBundle bundle, RelicRegistration reg, bool enabled)
         {
             if (bundle == null) return;
 
             if (reg.PrefabName == "M_Star")
             {
-                RegisterCraftedStar(bundle, reg);
+                RegisterCraftedStar(bundle, reg, enabled);
                 return;
             }
 
@@ -603,14 +683,30 @@ namespace Moonforged.ChristmasDecorations
                 if (!prefab.GetComponent<ReindeerPetInteract>()) prefab.AddComponent<ReindeerPetInteract>();
             }
 
-            // Tree lights
-            if (reg.PrefabName == "M_Christmas_Tree_1")
+            // Tree lights and the garlands' individual bulbs.
+            bool isTownTree = reg.PrefabName == "M_Christmas_Tree_1";
+            bool isSmallTree = reg.PrefabName == "M_Christmas_Tree_Small" ||
+                               reg.PrefabName == "M_White_Christmas_Tree_Small";
+            bool isGarland = reg.PrefabName == "M_Garland" || reg.PrefabName == "M_Garland_White";
+
+            if (isTownTree || isSmallTree || isGarland)
             {
                 var cycler = prefab.GetComponent<ChildLightsCycler>() ?? prefab.AddComponent<ChildLightsCycler>();
-                cycler.lightRendererNames = new[] { "Light1", "Light2", "Light3" };
-                cycler.intensity = 4.4f;
-                cycler.stepSeconds = 1f;
+                cycler.style = isTownTree
+                    ? ChildLightsCycler.AnimationStyle.ColorChase
+                    : ChildLightsCycler.AnimationStyle.FlowingColors;
+                cycler.intensity = 6.5f;
+                cycler.stepSeconds = isTownTree ? 1f : 0.9f;
+
+                if (isGarland)
+                {
+                    cycler.lightRendererNames = new string[26];
+                    cycler.lightRendererNames[0] = "Lights";
+                    for (int i = 1; i < cycler.lightRendererNames.Length; i++)
+                        cycler.lightRendererNames[i] = "Lights." + i.ToString("D3");
+                }
             }
+
 
             // Light chasers
             if (reg.PrefabName == "Christmas_Lights1")
@@ -629,10 +725,10 @@ namespace Moonforged.ChristmasDecorations
                 ChristmasLightChaserInstaller.InstallOn(prefab, 1f, 4.4f,
                     new Color[] { Color.red, Color.yellow, Color.blue }, ChristmasLightChaser.AnimationMode.Chase);
             if (reg.PrefabName == "M_Garland_Spiral_Green")
-                ChristmasLightChaserInstaller.InstallOn(prefab, 1f, 4.4f,
+                ChristmasLightChaserInstaller.InstallOn(prefab, 1f, 6.5f,
                     new Color[] { Color.red, Color.yellow, Color.blue }, ChristmasLightChaser.AnimationMode.Chase);
             if (reg.PrefabName == "M_Garland_Spiral_White")
-                ChristmasLightChaserInstaller.InstallOn(prefab, 1f, 4.4f,
+                ChristmasLightChaserInstaller.InstallOn(prefab, 1f, 6.5f,
                     new Color[] { Color.red, Color.yellow, Color.blue }, ChristmasLightChaser.AnimationMode.Chase);
             // Icicle lamp – midpoint-staggered rain, freeze, drops, stars, and sparkles
             if (reg.PrefabName == "M_Icicle_Lamp")
@@ -686,6 +782,28 @@ namespace Moonforged.ChristmasDecorations
             // Sled ropes
             if (reg.PrefabName == "M_Christmas_Sled")
             {
+                // Nested light strings are separate from their build-menu prefabs.
+                foreach (Transform child in prefab.transform)
+                {
+                    switch (Regex.Replace(child.name, @" \([0-9]+\)\z", string.Empty))
+                    {
+                        case "Christmas_Lights1":
+                            ChristmasLightChaserInstaller.InstallOn(child.gameObject, 1f, 4.4f);
+                            break;
+                        case "Christmas_Lights_Sled_Left":
+                        case "Christmas_Lights_Sled_Right":
+                            ChristmasLightChaserInstaller.InstallOn(child.gameObject, 1f, 4.4f,
+                                new Color[] { Color.red, Color.yellow, Color.blue }, ChristmasLightChaser.AnimationMode.Chase,
+                                bulbNamePrefix: "quadsphere.");
+                            break;
+                        case "MChristmas_Lights1":
+                            ChristmasLightChaserInstaller.InstallOn(child.gameObject, 1f, 4.4f,
+                                new Color[] { Color.red, Color.yellow, Color.blue }, ChristmasLightChaser.AnimationMode.Chase);
+                            break;
+                    }
+                }
+
+
                 var reins = prefab.GetComponent<SledReinsConnector>() ?? prefab.AddComponent<SledReinsConnector>();
                 reins.maxDeer = 9;
                 reins.sledAnchorRootName = "RopeAttach";
@@ -860,6 +978,7 @@ namespace Moonforged.ChristmasDecorations
             // Jötunn piece registration
             var config = new PieceConfig
             {
+                Enabled = enabled,
                 PieceTable = "Hammer",
                 Category = CategoryToTab(reg.Category),
                 CraftingStation = reg.CraftingStation,
@@ -926,7 +1045,7 @@ namespace Moonforged.ChristmasDecorations
             return list;
         }
 
-        private static void RegisterCraftedStar(AssetBundle bundle, RelicRegistration reg)
+        private static void RegisterCraftedStar(AssetBundle bundle, RelicRegistration reg, bool enabled)
         {
             if (_starRegistered) return;
 
@@ -982,13 +1101,16 @@ namespace Moonforged.ChristmasDecorations
             if (!string.IsNullOrEmpty(reg.Description)) shared.m_description = reg.Description;
 
             ItemManager.Instance.AddItem(new CustomItem(prefab, fixReference: true));
-            ItemManager.Instance.AddRecipe(new CustomRecipe(new RecipeConfig
+            if (enabled)
             {
-                Item = reg.PrefabName,
-                Amount = 1,
-                CraftingStation = string.IsNullOrEmpty(reg.CraftingStation) ? "Workbench" : reg.CraftingStation,
-                Requirements = reg.Requirements
-            }));
+                ItemManager.Instance.AddRecipe(new CustomRecipe(new RecipeConfig
+                {
+                    Item = reg.PrefabName,
+                    Amount = 1,
+                    CraftingStation = string.IsNullOrEmpty(reg.CraftingStation) ? "Workbench" : reg.CraftingStation,
+                    Requirements = reg.Requirements
+                }));
+            }
 
             _starRegistered = true;
         }
