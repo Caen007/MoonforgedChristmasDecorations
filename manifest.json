@@ -1,0 +1,15 @@
+{
+  "name": "MoonforgedChristmasDecorations",
+  "version_number": "1.0.8",
+  "website_url": "https://github.com/Caen007/MoonforgedChristmasDecorations",
+  "description": "Fills your Viking world with festive cheer: glowing trees, sparkling garlands, handmade gifts, sweets, wreaths, stockings, reindeer, and Santa’s own sleigh!",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2351",
+    "ValheimModding-Jotunn-2.30.2"
+  ],
+  "categories": [
+    "Building",
+    "Mods",
+    "Crafting"
+  ]
+}
